@@ -1,9 +1,10 @@
 const http = require("http")
 const app = require("./app")
 const { connectToDB } = require("./core/db")
+const config = require("./core/config")
 
 const server = http.createServer(app)
-const port = process.env.PORT
+const port = config.getAppConfig().port
 
 connectToDB()
 

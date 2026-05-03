@@ -1,20 +1,10 @@
 const { Sequelize, Op } = require("sequelize")
 
+const config = require("./config")
 const { modelsLoader } = require("./../sequelize/models/index")
 
 const database = new Sequelize({
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
-    port: process.env.DB_PORT,
-    pool: {
-        min: parseInt(process.env.DB_POOL_MIN),
-        max: parseInt(process.env.DB_POOL_MAX),
-        acquire: parseInt(process.env.DB_POOL_ACQUIRE),
-        idle: parseInt(process.env.DB_POOL_IDLE)
-    },
+    ...config.getDBConfig(),
     logging: false
 })
 
@@ -29,4 +19,4 @@ const connectToDB = async () => {
     }
 }
 
-module.exports = { connectToDB, models, database, Op }
+module.exports = { connectToDB, models, database,Op }
