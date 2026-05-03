@@ -1,3 +1,28 @@
+const Joi = require("joi")
+
+const validation = Joi.object({
+    db: Joi.object({
+        username: Joi.string().required(),
+        password: Joi.string().allow("").required(),
+        database: Joi.string().required(),
+        host: Joi.string().required(),
+        dialect: Joi.string().required(),
+        port: Joi.number().required(),
+        pool: Joi.object({
+            min: Joi.number().required(),
+            max: Joi.number().required(),
+            acquire: Joi.number().required(),
+            idle: Joi.number().required()
+        })
+    }),
+
+    app: Joi.object({
+        port: Joi.number().required(),
+        cookie_secret: Joi.string().required(),
+        session_secret: Joi.string().required()
+    })
+})
+
 module.exports = new (class {
     constructor() {
         this.config = {
@@ -21,8 +46,13 @@ module.exports = new (class {
                 cookie_secret: process.env.COOKIE_SECRET,
                 session_secret: process.env.SESSION_SECRET,
             }
-        };
+        }
 
+        const { error } = validation.validate(this.config)
+
+        if (error) {
+            throw new Error(`Invalid Configuration: ${error.message}`)
+        }
     }
 
     getDBConfig() {
