@@ -7,6 +7,8 @@ const cookieParser = require("cookie-parser")
 const session = require("express-session")
 
 const config = require("./core/config")
+const errorHandler = require("./middlewares/errorHandler.middleware")
+
 const authRouter = require("./routers/auth.route")
 
 
@@ -26,6 +28,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use("/auth", authRouter)
+app.use(errorHandler)
 
 app.get("/", (req, res) => {
     res.send("ok")
