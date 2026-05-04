@@ -1,5 +1,6 @@
 const authService = require("../services/auth.service")
 const createHttpError = require("http-errors");
+const cookieHelper = require("../helpers/cookie.helper")
 
 module.exports = new (class {
     #authService;
@@ -15,7 +16,12 @@ module.exports = new (class {
             throw new createHttpError.Conflict("A User With This Email Already Exists.");
         }
 
-        return res.send(result)
+        await cookieHelper.setRefreshTokenCookie(res, result.refreshToken)
+        await cookieHelper.setAccessTokenCookie(res, result.accessToken)
+
+        return res.status(201).send({
+            messgae: "The User Register Successfullly!"
+        })
     }
 
 })()

@@ -1,14 +1,21 @@
-const userRepo = require("../repositories/user.repository.js")
+const userRepo = require("../repositories/user.repository")
+const refreshTokenRepo = require("../repositories/refreshToken.repository")
+const tokenHelper = require("../helpers/token.helper")
+const config = require("../core/config")
 const bcrypt = require("bcrypt")
 
 module.exports = new (class {
-    #userRepo;
+    #UserRepo;
+    #RefreshTokenRepo;
+    #TokenHelper;
     constructor() {
-        this.#userRepo = userRepo
+        this.#UserRepo = userRepo
+        this.#RefreshTokenRepo = refreshTokenRepo
+        this.#TokenHelper = tokenHelper
     }
 
     async registerService(name, email, password) {
-        const theUser = await this.#userRepo.findUser({ email })
+        const theUser = await this.#UserRepo.findUser({ email })
 
         if (theUser) {
             return "USER_EXISTS"
@@ -16,9 +23,15 @@ module.exports = new (class {
             const salt = await bcrypt.genSalt(3)
             const cryptedPass = await bcrypt.hash(password, salt)
 
-            const newUser = await this.#userRepo.createUser(name, email, cryptedPass)
+            const newUser = await this.#UserRepo.createUser(name, email, cryptedPass)
 
-            return true
+
+            const refreshToken = await this.#TokenHelper.createRefreshToken(newUser.id)
+            const accessToken = await this.#TokenHelper.createAccessToken(newUser.id)
+
+            await this.#RefreshTokenRepo.createRefreshToken(refreshToken, newUser.id, (Date.now() + config.getAppConfig().refresh_token_expire))
+
+            return { refreshToken, accessToken }
         }
     }
 })()
