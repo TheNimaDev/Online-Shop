@@ -24,7 +24,7 @@ module.exports = new (class {
         await this.#CookieHelper.setAccessTokenCookie(res, result.accessToken)
 
         return res.status(201).send({
-            messgae: "The User Registered Successfullly!"
+            messgae: "The User Registered Successfully!"
         })
     }
 
@@ -39,8 +39,21 @@ module.exports = new (class {
         await this.#CookieHelper.setRefreshTokenCookie(res, result.refreshToken)
         await this.#CookieHelper.setAccessTokenCookie(res, result.accessToken)
 
-        return res.status(201).send({
-            message: "The User Logined Successfullly!"
+        return res.status(200).send({
+            message: "The User Logined Successfully!"
+        })
+    }
+
+    async logout(req, res) {
+        const theUser = req.user
+
+        await this.#AuthService.logoutService(theUser.id)
+
+        await this.#CookieHelper.clearRefreshTokenCookie(res)
+        await this.#CookieHelper.clearAccessTokenCookie(res)
+
+        return res.status(200).send({
+            message: "The User Logouted Successfully!"
         })
     }
 
