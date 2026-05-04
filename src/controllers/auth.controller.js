@@ -1,26 +1,30 @@
 const authService = require("../services/auth.service")
 const createHttpError = require("http-errors");
 const cookieHelper = require("../helpers/cookie.helper")
+const { default: autoBind } = require("auto-bind")
 
 module.exports = new (class {
-    #authService;
+    #AuthService;
+    #CookieHelper;
     constructor() {
-        this.#authService = authService
+        autoBind(this);
+        this.#AuthService = authService;
+        this.#CookieHelper = cookieHelper;
     }
 
     async register(req, res) {
         const { name, email, password } = req.body
-        const result = await authService.registerService(name, email, password)
+        const result = await this.#AuthService.registerService(name, email, password)
 
         if (result === "USER_EXISTS") {
-            throw new createHttpError.Conflict("A User With This Email Already Exists.");
+            throw new createHttpError.Conflict("A User With This Email Already Exists.")
         }
 
-        await cookieHelper.setRefreshTokenCookie(res, result.refreshToken)
-        await cookieHelper.setAccessTokenCookie(res, result.accessToken)
+        await this.#CookieHelper.setRefreshTokenCookie(res, result.refreshToken)
+        await this.#CookieHelper.setAccessTokenCookie(res, result.accessToken)
 
         return res.status(201).send({
-            messgae: "The User Register Successfullly!"
+            messgae: "The User Registered Successfullly!"
         })
     }
 

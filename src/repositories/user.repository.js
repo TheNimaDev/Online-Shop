@@ -1,8 +1,10 @@
 const { models, Op } = require("../core/db")
+const { default: autoBind } = require("auto-bind")
 
 module.exports = new (class {
     #User;
     constructor() {
+        autoBind(this);
         this.#User = models.User
     }
 
