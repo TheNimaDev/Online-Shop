@@ -8,7 +8,7 @@ module.exports = (handlerFunc = null) => {
             if (handlerFunc) {
                 handlerFunc(req, res)
             } else {
-                throw new createHttpError.Conflict("Please Login First!")
+                throw new createHttpError.Unauthorized("Please Login First!")
             }
         }
     }
