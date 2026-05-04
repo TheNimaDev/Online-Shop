@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser")
 const session = require("express-session")
 
 const config = require("./core/config")
+const authRouter = require("./routers/auth.route")
 
 
 app.use(cookieParser(config.getAppConfig().cookie_secret))
@@ -24,6 +25,7 @@ app.use(helmet());
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+app.use("/auth", authRouter)
 
 app.get("/", (req, res) => {
     res.send("ok")
