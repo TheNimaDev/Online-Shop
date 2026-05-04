@@ -77,4 +77,9 @@ module.exports = new (class {
 
         return { refreshToken, accessToken, theUser }
     }
+
+    async logoutService(userId) {
+        await this.#RefreshTokenRepo.deleteRefreshToken(userId)
+    }
+    
 })()

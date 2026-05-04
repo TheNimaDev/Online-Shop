@@ -38,4 +38,12 @@ module.exports = new (class {
         })
     }
 
+    async deleteRefreshToken(userId) {
+        await this.#Refreshtoken.destroy({
+            where: {
+                user_id: userId
+            }
+        })
+    }
+
 })
