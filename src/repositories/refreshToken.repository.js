@@ -17,4 +17,25 @@ module.exports = new (class {
         })
     }
 
+    async findByUserId(user_id) {
+        const refreshTokenFound = await this.#Refreshtoken.findOne({
+            where: {
+                user_id: user_id
+            }
+        });
+
+        return refreshTokenFound
+    }
+
+    async updateRefreshToken(refreshToken, userId, expire, version) {
+        const theUserRefreshToken = await this.findByUserId(userId)
+
+        await theUserRefreshToken.update({
+            refresh_token: refreshToken,
+            user_id: userId,
+            expire_time: expire,
+            version: ++version
+        })
+    }
+
 })
