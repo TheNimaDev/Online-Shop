@@ -19,7 +19,7 @@ module.exports = new (class {
     async registerService(name, email, password) {
         const theUser = await this.#UserRepo.findUser({ email })
 
-        if (theUser) return "USER_EXISTS"
+        if (theUser) "USER_EXISTS"
 
         const salt = await bcrypt.genSalt(3)
         const cryptedPass = await bcrypt.hash(password, salt)
@@ -38,10 +38,10 @@ module.exports = new (class {
     async loginService(email, password) {
         const theUser = await this.#UserRepo.findUser({ email }, true)
 
-        if (!theUser) return "INCORRECT_DATA"
+        if (!theUser) "INCORRECT_DATA"
         const isPasswordCorrect = await bcrypt.compare(password, theUser.password)
 
-        if (!isPasswordCorrect) return "INCORRECT_DATA"
+        if (!isPasswordCorrect) "INCORRECT_DATA"
         const theUerRefreshToken = await this.#RefreshTokenRepo.findByUserId(theUser.id)
 
         const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theUerRefreshToken?.version)
@@ -54,5 +54,27 @@ module.exports = new (class {
         }
 
         return { refreshToken, accessToken }
+    }
+
+    async accessTokenService(token) {
+        const decryptedToken = await this.#TokenHelper.verifyRefreshToken(token)
+
+        if (decryptedToken == "TOKEN_IS_INVALID") "TOKEN_IS_INVALID"
+
+        const theRefreshToken = await this.#RefreshTokenRepo.findByUserId(decryptedToken.id)
+
+        if (!theRefreshToken) "TOKEN_IS_INVALID"
+        if (!(theRefreshToken.version == decryptedToken.version && Date.now() < theRefreshToken.expire_time)) "TOKEN_IS_INVALID"
+
+        const theUser = await this.#UserRepo.findUser({ id: decryptedToken.id })
+
+        if (!theUser) "TOKEN_IS_INVALID"
+
+        const accessToken = await this.#TokenHelper.createAccessToken(theUser.id)
+        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theRefreshToken.version)
+
+        await this.#RefreshTokenRepo.createRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire))
+
+        return { refreshToken, accessToken, theUser }
     }
 })()
