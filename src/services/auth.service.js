@@ -34,4 +34,25 @@ module.exports = new (class {
 
         return { refreshToken, accessToken }
     }
+
+    async loginService(email, password) {
+        const theUser = await this.#UserRepo.findUser({ email }, true)
+
+        if (!theUser) return "INCORRECT_DATA"
+        const isPasswordCorrect = await bcrypt.compare(password, theUser.password)
+
+        if (!isPasswordCorrect) return "INCORRECT_DATA"
+        const theUerRefreshToken = await this.#RefreshTokenRepo.findByUserId(theUser.id)
+
+        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theUerRefreshToken?.version)
+        const accessToken = await this.#TokenHelper.createAccessToken(theUser.id)
+
+        if (theUerRefreshToken) {
+            await this.#RefreshTokenRepo.updateRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire), theUerRefreshToken.version)
+        } else {
+            await this.#RefreshTokenRepo.createRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire))
+        }
+
+        return { refreshToken, accessToken }
+    }
 })()

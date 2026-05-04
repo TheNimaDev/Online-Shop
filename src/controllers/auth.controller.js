@@ -28,4 +28,20 @@ module.exports = new (class {
         })
     }
 
+    async login(req, res) {
+        const { email, password } = req.body
+        const result = await this.#AuthService.loginService(email, password)
+
+        if (result === "INCORRECT_DATA") {
+            throw new createHttpError.Conflict("Email Or Password Is Incorrect.")
+        }
+
+        await this.#CookieHelper.setRefreshTokenCookie(res, result.refreshToken)
+        await this.#CookieHelper.setAccessTokenCookie(res, result.accessToken)
+
+        return res.status(201).send({
+            message: "The User Logined Successfullly!"
+        })
+    }
+
 })()
