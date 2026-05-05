@@ -25,6 +25,19 @@ module.exports = new (class {
         await this.#Category.createCategory(slug, title, description)
     }
 
+    async updateCategoryService(categoryId, slug, title, description) {
+        const theCategory = await this.#Category.findCategory({ id: categoryId })
+
+        if (!theCategory) return "CATEGORY_NOT_FOUND"
+
+        if (slug && slug != theCategory.slug) {
+            const isCategoryExistsWithThisSlug = await this.#Category.findCategory({ slug })
+            if (isCategoryExistsWithThisSlug) return "SLUG_IS_EXISTS"
+        }
+
+        await this.#Category.updateCategory(theCategory, slug, title, description)
+    }
+
     async deleteCategoryService(categoryId) {
         const isCategoryExists = await this.#Category.findCategory({ id: categoryId })
 
