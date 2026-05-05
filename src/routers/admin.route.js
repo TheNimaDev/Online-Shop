@@ -15,4 +15,7 @@ router.get("/users",adminController.getUsers)
 router.post("/category",adminController.createCategory)
 router.post("/category/:categoryId",adminController.deleteCategory)
 
+router.get("/category/:categoryId",adminController.getCategory)
+router.get("/categories",adminController.getCategories)
+
 module.exports = router

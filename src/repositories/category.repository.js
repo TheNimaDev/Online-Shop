@@ -45,4 +45,17 @@ module.exports = new (class {
         })
     }
 
+    async findCategories() {
+        const theCategories = await this.#Category.findAll({
+            include: [
+                {
+                    model: this.#Product,
+                    as: "products"
+                }
+            ]
+        })
+
+        return theCategories
+    }
+
 })()

@@ -12,9 +12,7 @@ module.exports = new (class {
     async getUsers(req, res) {
         const result = await this.#AdminService.getUsersService()
 
-        return res.status(200).send({
-            data: result
-        })
+        return res.status(200).send(result)
     }
 
     async createCategory(req, res) {
@@ -43,6 +41,24 @@ module.exports = new (class {
         return res.status(200).send({
             messgae: "The Category Deleted Successfully!"
         })
+    }
+
+    async getCategory(req, res) {
+        const { categoryId } = req.params
+
+        const result = await this.#AdminService.getCategoryService(categoryId)
+
+        if (result == "CATEGORY_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Category Not Found.")
+        }
+
+        return res.status(200).send(result)
+    }
+
+    async getCategories(req, res) {
+        const result = await this.#AdminService.getCategoriesService()
+
+        return res.status(200).send(result)
     }
 
 })()
