@@ -23,10 +23,13 @@ module.exports = new (class {
         return theProducts
     }
 
-    async findProduct(productId) {
+    async findProduct({ id = null, slug = null }) {
         const theProduct = await this.#Product.findOne({
             where: {
-                id: productId
+                [Op.or]: [
+                    { id },
+                    { slug }
+                ]
             },
             include: [
                 {
@@ -37,6 +40,25 @@ module.exports = new (class {
         })
 
         return theProduct
+    }
+
+    async createProduct(slug, title, price, description, inventory, categoryId) {
+        await this.#Product.create({
+            slug,
+            title,
+            price,
+            description,
+            inventory,
+            category_id: categoryId
+        })
+    }
+
+    async deleteProduct(productId) {
+        await this.#Product.destroy({
+            where: {
+                id: productId
+            }
+        })
     }
 
 })()

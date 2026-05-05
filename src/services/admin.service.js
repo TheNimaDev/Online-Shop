@@ -70,11 +70,28 @@ module.exports = new (class {
     }
 
     async getProductService(productId) {
-        const theProduct = await this.#Product.findProduct(productId)
+        const theProduct = await this.#Product.findProduct({ id: productId })
 
         if (!theProduct) return "PRODUCT_NOT_FOUND"
-        
+
         return theProduct
+    }
+
+    async createProductService(slug, title, price, description, inventory, categoryId) {
+        const isCategoryExists = await this.#Category.findCategory({ id: categoryId })
+        if (!isCategoryExists) return "CATEGORY_NOT_FOUND"
+
+        const isProductExists = await this.#Product.findProduct({ slug })
+        if (isProductExists) return "PRODUCT_IS_EXISTS"
+
+        await this.#Product.createProduct(slug, title, price, description, inventory, categoryId)
+    }
+
+    async deleteProductService(productId) {
+        const isProductExists = await this.#Product.findProduct({ id: productId })
+        if (!isProductExists) return "PRODUCT_NOT_FOUND"
+
+        await this.#Product.deleteProduct(productId)
     }
 
 })()
