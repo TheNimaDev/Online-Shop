@@ -1,6 +1,8 @@
 const UserModel = require("./user.model")
 const RefreshtokenModel = require("./refreshtoken.model")
 const AdminModel = require("./admin.model")
+const CategoryModel = require("./category.model")
+const ProductModel = require("./product.model")
 
 exports.modelsLoader = (sequelize) => {
     /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
@@ -9,6 +11,10 @@ exports.modelsLoader = (sequelize) => {
     const Refreshtoken = RefreshtokenModel(sequelize)
     /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
     const Admin = AdminModel(sequelize)
+    /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
+    const Category = CategoryModel(sequelize)
+    /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
+    const Product = ProductModel(sequelize)
 
     User.hasOne(Refreshtoken, {
         foreignKey: "user_id",
@@ -28,9 +34,20 @@ exports.modelsLoader = (sequelize) => {
         as: "user"
     })
 
+    Category.hasMany(Product,{
+        foreignKey: "category_id",
+        as:"products"
+    })
+    Product.hasMany(Category,{
+        foreignKey: "category_id",
+        as:"category"
+    })
+
     return {
         User,
         Refreshtoken,
-        Admin
+        Admin,
+        Category,
+        Product
     }
 }
