@@ -43,6 +43,23 @@ module.exports = new (class {
         })
     }
 
+    async updateCategory(req, res) {
+        const { categoryId } = req.params
+        const { slug, title, description } = req.body
+
+        const result = await this.#AdminService.updateCategoryService(categoryId, slug, title, description)
+
+        if (result == "CATEGORY_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Category Not Found.")
+        } else if (result == "SLUG_IS_EXISTS") {
+            throw new createHttpError.Conflict("The Slug Already Exists.")
+        }
+
+        return res.status(201).send({
+            messgae: "The Category Updated Successfully!"
+        })
+    }
+
     async getCategory(req, res) {
         const { categoryId } = req.params
 

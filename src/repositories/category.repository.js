@@ -37,6 +37,14 @@ module.exports = new (class {
         })
     }
 
+    async updateCategory(theCategory, slug, title, description) {
+        await theCategory.update({
+            slug: slug || theCategory.slug,
+            title: title || theCategory.title,
+            description: description || theCategory.description
+        })
+    }
+
     async deleteCategory(categoryId) {
         await this.#Category.destroy({
             where: {
