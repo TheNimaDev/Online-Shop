@@ -1,4 +1,4 @@
-const createHttpError = require("http-errors");
+const createHttpError = require("http-errors")
 
 module.exports = (handlerFunc = null) => {
     return function (req, res, next) {
