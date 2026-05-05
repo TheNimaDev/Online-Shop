@@ -19,7 +19,7 @@ module.exports = new (class {
     async registerService(name, email, password) {
         const theUser = await this.#UserRepo.findUser({ email })
 
-        if (theUser) "USER_EXISTS"
+        if (theUser) return "USER_EXISTS"
 
         const salt = await bcrypt.genSalt(3)
         const cryptedPass = await bcrypt.hash(password, salt)
@@ -38,10 +38,10 @@ module.exports = new (class {
     async loginService(email, password) {
         const theUser = await this.#UserRepo.findUser({ email }, true)
 
-        if (!theUser) "INCORRECT_DATA"
+        if (!theUser) return "INCORRECT_DATA"
         const isPasswordCorrect = await bcrypt.compare(password, theUser.password)
 
-        if (!isPasswordCorrect) "INCORRECT_DATA"
+        if (!isPasswordCorrect) return "INCORRECT_DATA"
         const theUerRefreshToken = await this.#RefreshTokenRepo.findByUserId(theUser.id)
 
         const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theUerRefreshToken?.version)
@@ -59,16 +59,16 @@ module.exports = new (class {
     async accessTokenService(token) {
         const decryptedToken = await this.#TokenHelper.verifyRefreshToken(token)
 
-        if (decryptedToken == "TOKEN_IS_INVALID") "TOKEN_IS_INVALID"
+        if (decryptedToken == "TOKEN_IS_INVALID") return "TOKEN_IS_INVALID"
 
         const theRefreshToken = await this.#RefreshTokenRepo.findByUserId(decryptedToken.id)
 
-        if (!theRefreshToken) "TOKEN_IS_INVALID"
-        if (!(theRefreshToken.version == decryptedToken.version && Date.now() < theRefreshToken.expire_time)) "TOKEN_IS_INVALID"
+        if (!theRefreshToken) return "TOKEN_IS_INVALID"
+        if (!(theRefreshToken.version == decryptedToken.version && Date.now() < theRefreshToken.expire_time)) return "TOKEN_IS_INVALID"
 
         const theUser = await this.#UserRepo.findUser({ id: decryptedToken.id })
 
-        if (!theUser) "TOKEN_IS_INVALID"
+        if (!theUser) return "TOKEN_IS_INVALID"
 
         const accessToken = await this.#TokenHelper.createAccessToken(theUser.id)
         const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theRefreshToken.version)
@@ -81,5 +81,5 @@ module.exports = new (class {
     async logoutService(userId) {
         await this.#RefreshTokenRepo.deleteRefreshToken(userId)
     }
-    
+
 })()
