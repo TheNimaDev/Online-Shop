@@ -2,7 +2,7 @@ const express = require("express")
 
 const authController = require("../controllers/auth.controller")
 const checkAuthMiddleware = require("../middlewares/checkAuth.middleware")
-const authGuard = require("../guards/authentication.guard")
+const authenticationGuard = require("../guards/authentication.guard")
 
 const router = express.Router()
 
@@ -12,7 +12,7 @@ router.post("/login", authController.login)
 
 router.post("/logout",
     checkAuthMiddleware,
-    authGuard(),
+    authenticationGuard(),
     authController.logout
 )
 

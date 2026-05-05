@@ -17,10 +17,10 @@ module.exports = new (class {
         })
     }
 
-    async findByUserId(user_id) {
+    async findByUserId(userId) {
         const refreshTokenFound = await this.#Refreshtoken.findOne({
             where: {
-                user_id: user_id
+                user_id: userId
             }
         });
 

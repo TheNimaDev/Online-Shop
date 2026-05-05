@@ -10,6 +10,7 @@ const config = require("./core/config")
 const errorHandler = require("./middlewares/errorHandler.middleware")
 
 const authRouter = require("./routers/auth.route")
+const adminRouter = require("./routers/admin.route")
 
 
 app.use(cookieParser(config.getAppConfig().cookie_secret))
@@ -28,6 +29,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use("/auth", authRouter)
+app.use("/admin", adminRouter)
+
 app.use(errorHandler)
 
 app.get("/", (req, res) => {
