@@ -38,7 +38,7 @@ exports.modelsLoader = (sequelize) => {
         foreignKey: "category_id",
         as:"products"
     })
-    Product.hasMany(Category,{
+    Product.belongsTo(Category,{
         foreignKey: "category_id",
         as:"category"
     })

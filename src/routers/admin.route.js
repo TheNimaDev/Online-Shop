@@ -12,5 +12,7 @@ router.use(authenticationGuard())
 router.use(authorizationGuard())
 
 router.get("/users",adminController.getUsers)
+router.post("/category",adminController.createCategory)
+router.post("/category/:categoryId",adminController.deleteCategory)
 
 module.exports = router
