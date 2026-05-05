@@ -49,8 +49,8 @@ module.exports = new (class {
                 port: process.env.PORT,
                 cookie_secret: process.env.COOKIE_SECRET,
                 session_secret: process.env.SESSION_SECRET,
-                refresh_token_secret: process.env.ACCESS_TOKEN_SECRET,
-                access_token_secret: process.env.REFRESH_TOKEN_SECRET,
+                refresh_token_secret: process.env.REFRESH_TOKEN_SECRET,
+                access_token_secret: process.env.ACCESS_TOKEN_SECRET,
                 refresh_token_expire: +process.env.REFRESH_TOKEN_EXPIRE,
                 access_token_expire: +process.env.ACCESS_TOKEN_EXPIRE,
             }

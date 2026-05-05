@@ -33,4 +33,18 @@ module.exports = new (class {
         await this.#Category.deleteCategory(categoryId)
     }
 
+    async getCategoryService(categoryId) {
+        const theCategory = await this.#Category.findCategory({ id: categoryId })
+
+        if (!theCategory) return "CATEGORY_NOT_FOUND"
+
+        return theCategory
+    }
+
+    async getCategoriesService() {
+        const theCategory = await this.#Category.findCategories()
+
+        return theCategory
+    }
+
 })()
