@@ -36,4 +36,15 @@ module.exports = new (class {
             password: undefined
         } : null
     }
+
+    async findUsers() {
+        const theUsers = await this.#User.findAll({
+            attributes: {
+                exclude: ["password"]
+            }
+        })
+
+        return theUsers
+    }
+
 })()
