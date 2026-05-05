@@ -42,13 +42,13 @@ module.exports = new (class {
         const isPasswordCorrect = await bcrypt.compare(password, theUser.password)
 
         if (!isPasswordCorrect) return "INCORRECT_DATA"
-        const theUerRefreshToken = await this.#RefreshTokenRepo.findByUserId(theUser.id)
+        const theRefreshToken = await this.#RefreshTokenRepo.findByUserId(theUser.id)
 
-        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theUerRefreshToken?.version)
+        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theRefreshToken.version + 1 || undefined)
         const accessToken = await this.#TokenHelper.createAccessToken(theUser.id)
 
-        if (theUerRefreshToken) {
-            await this.#RefreshTokenRepo.updateRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire), theUerRefreshToken.version)
+        if (theRefreshToken) {
+            await this.#RefreshTokenRepo.updateRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire), theRefreshToken.version)
         } else {
             await this.#RefreshTokenRepo.createRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire))
         }
@@ -71,9 +71,9 @@ module.exports = new (class {
         if (!theUser) return "TOKEN_IS_INVALID"
 
         const accessToken = await this.#TokenHelper.createAccessToken(theUser.id)
-        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theRefreshToken.version)
-
-        await this.#RefreshTokenRepo.createRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire))
+        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theRefreshToken.version + 1)
+        
+        await this.#RefreshTokenRepo.updateRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire), theRefreshToken.version)
 
         return { refreshToken, accessToken, theUser }
     }
