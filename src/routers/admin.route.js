@@ -19,4 +19,7 @@ router.post("/category/:categoryId/update",adminController.updateCategory)
 router.get("/category/:categoryId",adminController.getCategory)
 router.get("/categories",adminController.getCategories)
 
+router.get("/products",adminController.getProducts)
+router.get("/product/:productId",adminController.getProduct)
+
 module.exports = router

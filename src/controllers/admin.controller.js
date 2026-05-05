@@ -78,4 +78,22 @@ module.exports = new (class {
         return res.status(200).send(result)
     }
 
+    async getProducts(req, res) {
+        const result = await this.#AdminService.getProductsService()
+
+        return res.status(200).send(result)
+    }
+
+    async getProduct(req, res) {
+        const { productId } = req.params
+
+        const result = await this.#AdminService.getProductService(productId)
+
+        if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        }
+
+        return res.status(200).send(result)
+    }
+
 })()
