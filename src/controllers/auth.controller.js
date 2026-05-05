@@ -33,7 +33,7 @@ module.exports = new (class {
         const result = await this.#AuthService.loginService(email, password)
 
         if (result === "INCORRECT_DATA") {
-            throw new createHttpError.Conflict("Email Or Password Is Incorrect.")
+            throw new createHttpError.Unauthorized("Email Or Password Is Incorrect.")
         }
 
         await this.#CookieHelper.setRefreshTokenCookie(res, result.refreshToken)
