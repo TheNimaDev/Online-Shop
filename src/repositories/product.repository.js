@@ -4,10 +4,14 @@ const { default: autoBind } = require("auto-bind")
 module.exports = new (class {
     #Category;
     #Product;
+    #Comment;
+    #User;
     constructor() {
         autoBind(this);
         this.#Category = models.Category
         this.#Product = models.Product
+        this.#Comment = models.Comment
+        this.#User = models.User
     }
 
     async findProducts() {
@@ -16,6 +20,18 @@ module.exports = new (class {
                 {
                     model: this.#Category,
                     as: "category"
+                }, {
+                    model: this.#Comment,
+                    as: "comments",
+                    include: [
+                        {
+                            model: this.#User,
+                            as: "user",
+                            attributes: {
+                                exclude: ["password"]
+                            }
+                        }
+                    ]
                 }
             ]
         })
@@ -35,6 +51,18 @@ module.exports = new (class {
                 {
                     model: this.#Category,
                     as: "category"
+                }, {
+                    model: this.#Comment,
+                    as: "comments",
+                    include: [
+                        {
+                            model: this.#User,
+                            as: "user",
+                            attributes: {
+                                exclude: ["password"]
+                            }
+                        }
+                    ]
                 }
             ]
         })
@@ -70,6 +98,25 @@ module.exports = new (class {
             inventory: inventory || theProduct.inventory,
             categoryId: categoryId || theProduct.categoryId
         })
+    }
+
+    async updateRateOfProduct(productId) {
+        const theProduct = await this.findProduct({ id: productId })
+
+        if (theProduct.comments) {
+            let rate = 0
+            let totalRatesNumber = 0
+
+            theProduct.comments.forEach(comment => {
+                totalRatesNumber += comment.rate
+            })
+
+            rate = totalRatesNumber / theProduct.comments.length
+
+            await theProduct.update({
+                rate: rate.toFixed(1)
+            })
+        }
     }
 
 })()
