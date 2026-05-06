@@ -4,6 +4,7 @@ const AdminModel = require("./admin.model")
 const CategoryModel = require("./category.model")
 const ProductModel = require("./product.model")
 const FavoriteModel = require("./favorite.model")
+const CommentModel = require("./comment.model")
 
 exports.modelsLoader = (sequelize) => {
     /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
@@ -18,6 +19,8 @@ exports.modelsLoader = (sequelize) => {
     const Product = ProductModel(sequelize)
     /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
     const Favorite = FavoriteModel(sequelize)
+    /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
+    const Comment = CommentModel(sequelize)
 
     User.hasOne(Refreshtoken, {
         foreignKey: "user_id",
@@ -63,12 +66,30 @@ exports.modelsLoader = (sequelize) => {
         as: "product"
     })
 
+    User.hasMany(Comment, {
+        foreignKey: "user_id",
+        as: "comments"
+    })
+    Comment.belongsTo(User, {
+        foreignKey: "user_id",
+        as: "user"
+    })
+    Product.hasMany(Comment, {
+        foreignKey: "product_id",
+        as: "comments"
+    })
+    Comment.belongsTo(Product, {
+        foreignKey: "product_id",
+        as: "product"
+    })
+
     return {
         User,
         Refreshtoken,
         Admin,
         Category,
         Product,
-        Favorite
+        Favorite,
+        Comment
     }
 }
