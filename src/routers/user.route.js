@@ -13,5 +13,7 @@ router.post("/change/password", userController.changePassword)
 router.post("/change/info", userController.changeInfo)
 
 router.get("/favorites", userController.getFavorites)
+router.post("/favorites/delete/:productId", userController.deleteFavorite)
+router.post("/favorites/create/:productId", userController.createFavorite)
 
 module.exports = router
