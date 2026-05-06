@@ -16,4 +16,6 @@ router.get("/favorites", userController.getFavorites)
 router.post("/favorites/delete/:productId", userController.deleteFavorite)
 router.post("/favorites/create/:productId", userController.createFavorite)
 
+router.post("/comment/:productId",userController.createComment)
+
 module.exports = router

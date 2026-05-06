@@ -1,5 +1,6 @@
 const userRepo = require("../repositories/user.repository")
 const favoriteRepo = require("../repositories/favorite.repository")
+const commentRepo = require("../repositories/comment.repository")
 const productRepo = require("../repositories/product.repository")
 const bcrypt = require("bcrypt")
 
@@ -9,11 +10,13 @@ module.exports = new (class {
     #UserRepo;
     #FavoriteRepo;
     #ProductRepo;
+    #CommentRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
         this.#FavoriteRepo = favoriteRepo
         this.#ProductRepo = productRepo
+        this.#CommentRepo = commentRepo
     }
 
     async changePasswordService(userId, current_password, new_password) {
@@ -55,10 +58,17 @@ module.exports = new (class {
         const theProduct = await this.#ProductRepo.findProduct({ id: productId })
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
-        const theFavorite = await this.#FavoriteRepo.findUserFavorite(userId, productId)
-        if (theFavorite) return "FAVORITE_IS_EXISTS"
+        const isFavorite = await this.#FavoriteRepo.findUserFavorite(userId, productId)
+        if (isFavorite) return "FAVORITE_IS_EXISTS"
 
         await this.#FavoriteRepo.createFavorite(userId, productId)
+    }
+
+    async createCommmentService(userId, productId, text, positivePoints, negetivePoints, rate) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+        await this.#CommentRepo.createComment(userId, productId, text, positivePoints, negetivePoints, rate)
     }
 
 })
