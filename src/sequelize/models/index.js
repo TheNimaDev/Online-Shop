@@ -3,6 +3,7 @@ const RefreshtokenModel = require("./refreshtoken.model")
 const AdminModel = require("./admin.model")
 const CategoryModel = require("./category.model")
 const ProductModel = require("./product.model")
+const FavoriteModel = require("./favorite.model")
 
 exports.modelsLoader = (sequelize) => {
     /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
@@ -15,6 +16,8 @@ exports.modelsLoader = (sequelize) => {
     const Category = CategoryModel(sequelize)
     /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
     const Product = ProductModel(sequelize)
+    /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
+    const Favorite = FavoriteModel(sequelize)
 
     User.hasOne(Refreshtoken, {
         foreignKey: "user_id",
@@ -34,13 +37,30 @@ exports.modelsLoader = (sequelize) => {
         as: "user"
     })
 
-    Category.hasMany(Product,{
+    Category.hasMany(Product, {
         foreignKey: "category_id",
-        as:"products"
+        as: "products"
     })
-    Product.belongsTo(Category,{
+    Product.belongsTo(Category, {
         foreignKey: "category_id",
-        as:"category"
+        as: "category"
+    })
+
+    User.hasMany(Favorite, {
+        foreignKey: "user_id",
+        as: "favorites"
+    })
+    Favorite.belongsTo(User, {
+        foreignKey: "user_id",
+        as: "user"
+    })
+    Product.hasMany(Favorite, {
+        foreignKey: "product_id",
+        as: "favorites"
+    })
+    Favorite.belongsTo(Product, {
+        foreignKey: "product_id",
+        as: "product"
     })
 
     return {
@@ -48,6 +68,7 @@ exports.modelsLoader = (sequelize) => {
         Refreshtoken,
         Admin,
         Category,
-        Product
+        Product,
+        Favorite
     }
 }
