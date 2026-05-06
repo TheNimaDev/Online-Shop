@@ -69,6 +69,7 @@ module.exports = new (class {
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
         await this.#CommentRepo.createComment(userId, productId, text, positivePoints, negetivePoints, rate)
+        await this.#ProductRepo.updateRateOfProduct(productId)
     }
 
 })
