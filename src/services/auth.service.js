@@ -26,11 +26,11 @@ module.exports = new (class {
 
         const newUser = await this.#UserRepo.createUser(name, email, cryptedPass)
 
+        const now = Date.now()
+        const refreshToken = await this.#TokenHelper.createRefreshToken(newUser.id, now)
+        const accessToken = await this.#TokenHelper.createAccessToken(newUser.id, now)
 
-        const refreshToken = await this.#TokenHelper.createRefreshToken(newUser.id)
-        const accessToken = await this.#TokenHelper.createAccessToken(newUser.id)
-
-        await this.#RefreshTokenRepo.createRefreshToken(refreshToken, newUser.id, (Date.now() + config.getAppConfig().refresh_token_expire))
+        await this.#RefreshTokenRepo.createRefreshToken(refreshToken, newUser.id, (now + config.getAppConfig().refresh_token_expire))
 
         return { refreshToken, accessToken }
     }
@@ -44,13 +44,14 @@ module.exports = new (class {
         if (!isPasswordCorrect) return "INCORRECT_DATA"
         const theRefreshToken = await this.#RefreshTokenRepo.findByUserId(theUser.id)
 
-        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theRefreshToken?.version + 1 || undefined)
-        const accessToken = await this.#TokenHelper.createAccessToken(theUser.id)
+        const now = Date.now()
+        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, now, theRefreshToken?.version + 1 || undefined)
+        const accessToken = await this.#TokenHelper.createAccessToken(theUser.id, now)
 
         if (theRefreshToken) {
-            await this.#RefreshTokenRepo.updateRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire), theRefreshToken.version)
+            await this.#RefreshTokenRepo.updateRefreshToken(refreshToken, theUser.id, (now + config.getAppConfig().refresh_token_expire), theRefreshToken.version)
         } else {
-            await this.#RefreshTokenRepo.createRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire))
+            await this.#RefreshTokenRepo.createRefreshToken(refreshToken, theUser.id, (now + config.getAppConfig().refresh_token_expire))
         }
 
         return { refreshToken, accessToken }
@@ -70,10 +71,11 @@ module.exports = new (class {
 
         if (!theUser) return "TOKEN_IS_INVALID"
 
-        const accessToken = await this.#TokenHelper.createAccessToken(theUser.id)
-        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theRefreshToken.version + 1)
-        
-        await this.#RefreshTokenRepo.updateRefreshToken(refreshToken, theUser.id, (Date.now() + config.getAppConfig().refresh_token_expire), theRefreshToken.version)
+        const now = Date.now()
+        const accessToken = await this.#TokenHelper.createAccessToken(theUser.id, now)
+        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, now, theRefreshToken.version + 1)
+
+        await this.#RefreshTokenRepo.updateRefreshToken(refreshToken, theUser.id, (now + config.getAppConfig().refresh_token_expire), theRefreshToken.version)
 
         return { refreshToken, accessToken, theUser }
     }

@@ -19,7 +19,7 @@ module.exports = async (req, res, next) => {
                     req.user = theUser
                     return next()
                 }
-            }else{
+            } else {
                 await cookieHelper.clearAccessTokenCookie(res)
             }
         }
@@ -29,13 +29,18 @@ module.exports = async (req, res, next) => {
         if (theRefreshToken) {
             const result = await authService.accessTokenService(theRefreshToken)
 
-            await cookieHelper.setRefreshTokenCookie(res, result.refreshToken)
-            await cookieHelper.setAccessTokenCookie(res, result.accessToken)
+            if (result != "TOKEN_IS_INVALID") {
+                await cookieHelper.setRefreshTokenCookie(res, result.refreshToken)
+                await cookieHelper.setAccessTokenCookie(res, result.accessToken)
 
-            req.isLogin = true
-            req.user = result.theUser
+                req.isLogin = true
+                req.user = result.theUser
 
-            return next()
+                return next()
+            } else {
+                await cookieHelper.clearAccessTokenCookie(res)
+                await cookieHelper.clearRefreshTokenCookie(res)
+            }
         }
     }
     req.isLogin = false

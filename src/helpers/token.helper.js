@@ -2,31 +2,35 @@ const config = require("../core/config")
 const jwt = require("jsonwebtoken")
 
 module.exports = new (class {
-    async createRefreshToken(userId, version = 1) {
+    async createRefreshToken(userId, now, version = 1) {
+        const expire = now + config.getAppConfig().refresh_token_expire
+
         const refreshToken = jwt.sign(
             {
                 id: userId,
-                expire: (Date.now() + (config.getAppConfig().refresh_token_expire)),
+                expire,
                 version
             },
             config.getAppConfig().refresh_token_secret,
             {
-                expiresIn: (Date.now() + (config.getAppConfig().refresh_token_expire))
+                expiresIn: expire
             }
         )
 
         return refreshToken
     }
 
-    async createAccessToken(userId) {
+    async createAccessToken(userId, now) {
+        const expire = now + config.getAppConfig().access_token_expire
+
         const accessToken = jwt.sign(
             {
                 id: userId,
-                expire: (Date.now() + (config.getAppConfig().access_token_expire)),
+                expire
             },
             config.getAppConfig().access_token_secret,
             {
-                expiresIn: (Date.now() + (config.getAppConfig().access_token_expire))
+                expiresIn: expire
             }
         )
 
