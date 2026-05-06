@@ -44,7 +44,7 @@ module.exports = new (class {
         if (!isPasswordCorrect) return "INCORRECT_DATA"
         const theRefreshToken = await this.#RefreshTokenRepo.findByUserId(theUser.id)
 
-        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theRefreshToken.version + 1 || undefined)
+        const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, theRefreshToken?.version + 1 || undefined)
         const accessToken = await this.#TokenHelper.createAccessToken(theUser.id)
 
         if (theRefreshToken) {
