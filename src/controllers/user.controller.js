@@ -46,4 +46,36 @@ module.exports = new (class {
         return res.status(200).send(result)
     }
 
+    async deleteFavorite(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+
+        const result = await userService.deleteFavoriteService(theUser.id, productId)
+
+        if (result == "FAVORITE_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Favorite Not Found.")
+        }
+
+        return res.status(201).send({
+            message: "The Favorite Deleted Successfully!"
+        })
+    }
+
+    async createFavorite(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+
+        const result = await userService.createFavoriteService(theUser.id, productId)
+
+        if (result == "FAVORITE_IS_EXISTS") {
+            throw new createHttpError.Conflict("The Favorite Already Exists.")
+        } else if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        }
+
+        return res.status(201).send({
+            message: "The Favorite Created Successfully!"
+        })
+    }
+
 })

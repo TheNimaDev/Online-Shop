@@ -1,5 +1,6 @@
 const userRepo = require("../repositories/user.repository")
 const favoriteRepo = require("../repositories/favorite.repository")
+const productRepo = require("../repositories/product.repository")
 const bcrypt = require("bcrypt")
 
 const { default: autoBind } = require("auto-bind")
@@ -7,10 +8,12 @@ const { default: autoBind } = require("auto-bind")
 module.exports = new (class {
     #UserRepo;
     #FavoriteRepo;
+    #ProductRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
         this.#FavoriteRepo = favoriteRepo
+        this.#ProductRepo = productRepo
     }
 
     async changePasswordService(userId, current_password, new_password) {
@@ -38,6 +41,24 @@ module.exports = new (class {
         const theFavorites = await this.#FavoriteRepo.findAllUserFavorites(userId)
 
         return theFavorites
+    }
+
+    async deleteFavoriteService(userId, productId) {
+        const theFavorite = await this.#FavoriteRepo.findUserFavorite(userId, productId)
+
+        if (!theFavorite) return "FAVORITE_NOT_FOUND"
+
+        await this.#FavoriteRepo.deleteFavorite(theFavorite.id)
+    }
+
+    async createFavoriteService(userId, productId) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+        const theFavorite = await this.#FavoriteRepo.findUserFavorite(userId, productId)
+        if (theFavorite) return "FAVORITE_IS_EXISTS"
+
+        await this.#FavoriteRepo.createFavorite(userId, productId)
     }
 
 })

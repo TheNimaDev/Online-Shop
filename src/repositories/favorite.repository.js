@@ -71,4 +71,19 @@ module.exports = new (class {
         return theFavorite
     }
 
+    async deleteFavorite(favoriteId) {
+        await this.#Favorite.destroy({
+            where: {
+                id: favoriteId
+            }
+        })
+    }
+
+    async createFavorite(userId, productId) {
+        await this.#Favorite.create({
+            user_id: userId,
+            product_id: productId
+        })
+    }
+
 })()
