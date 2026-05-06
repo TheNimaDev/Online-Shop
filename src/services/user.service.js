@@ -1,13 +1,16 @@
 const userRepo = require("../repositories/user.repository")
+const favoriteRepo = require("../repositories/favorite.repository")
 const bcrypt = require("bcrypt")
 
 const { default: autoBind } = require("auto-bind")
 
 module.exports = new (class {
     #UserRepo;
+    #FavoriteRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
+        this.#FavoriteRepo = favoriteRepo
     }
 
     async changePasswordService(userId, current_password, new_password) {
@@ -30,4 +33,11 @@ module.exports = new (class {
 
         await this.#UserRepo.changeInfo(theUser, name)
     }
+
+    async getFavoritesService(userId) {
+        const theFavorites = await this.#FavoriteRepo.findAllUserFavorites(userId)
+
+        return theFavorites
+    }
+
 })

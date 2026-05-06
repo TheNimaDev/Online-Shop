@@ -1,0 +1,74 @@
+const { models, Op } = require("../core/db")
+const { default: autoBind } = require("auto-bind")
+
+module.exports = new (class {
+    #Favorite;
+    #User;
+    #Category;
+    #Product;
+    constructor() {
+        autoBind(this);
+        this.#Favorite = models.Favorite
+        this.#User = models.User
+        this.#Category = models.Category
+        this.#Product = models.Product
+    }
+
+    async findAllUserFavorites(userId) {
+        const theFavorites = await this.#Favorite.findAll({
+            where: {
+                user_id: userId
+            },
+            include: [
+                {
+                    model: this.#User,
+                    as: "user",
+                    attributes: {
+                        exclude: ["password"]
+                    }
+                }, {
+                    model: this.#Product,
+                    as: "product",
+                    include: [
+                        {
+                            model: this.#Category,
+                            as: "category"
+                        }
+                    ]
+                }
+            ]
+        })
+
+        return theFavorites
+    }
+
+    async findUserFavorite(userId, productId) {
+        const theFavorite = await this.#Favorite.findOne({
+            where: {
+                product_id: productId,
+                user_id: userId
+            },
+            include: [
+                {
+                    model: this.#User,
+                    as: "user",
+                    attributes: {
+                        exclude: ["password"]
+                    }
+                }, {
+                    model: this.#Product,
+                    as: "product",
+                    include: [
+                        {
+                            model: this.#Category,
+                            as: "category"
+                        }
+                    ]
+                }
+            ]
+        })
+
+        return theFavorite
+    }
+
+})()
