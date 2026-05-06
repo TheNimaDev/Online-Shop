@@ -37,4 +37,13 @@ module.exports = new (class {
             message: "The User Info Changed Successfully!"
         })
     }
+
+    async getFavorites(req, res) {
+        const theUser = req.user
+
+        const result = await userService.getFavoritesService(theUser.id)
+
+        return res.status(200).send(result)
+    }
+
 })
