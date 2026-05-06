@@ -47,4 +47,16 @@ module.exports = new (class {
         return theUsers
     }
 
+    async changePassword(theUser, cryptedPass) {
+        await theUser.update({
+            password: cryptedPass
+        })
+    }
+
+    async changeInfo(theUser, name) {
+        await theUser.update({
+            name
+        })
+    }
+
 })()

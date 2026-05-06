@@ -11,6 +11,7 @@ const errorHandler = require("./middlewares/errorHandler.middleware")
 
 const authRouter = require("./routers/auth.route")
 const adminRouter = require("./routers/admin.route")
+const userRouter = require("./routers/user.route")
 
 
 app.use(cookieParser(config.getAppConfig().cookie_secret))
@@ -30,6 +31,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use("/auth", authRouter)
 app.use("/admin", adminRouter)
+app.use("/user", userRouter)
 
 app.use(errorHandler)
 
