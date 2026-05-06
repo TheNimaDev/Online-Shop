@@ -124,4 +124,22 @@ module.exports = new (class {
         })
     }
 
+    async updateProduct(req, res) {
+        const { slug, title, price, description, inventory, categoryId } = req.body
+        const { productId } = req.params
+        const result = await this.#AdminService.updateProductService(productId, slug, title, price, description, inventory, categoryId)
+
+        if (result == "CATEGORY_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Category Not Found.")
+        } else if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        } else if (result == "SLUG_IS_EXISTS") {
+            throw new createHttpError.Conflict("The Slug Already Exists.")
+        }
+
+        return res.status(201).send({
+            messgae: "The product Updated Successfully!"
+        })
+    }
+
 })()

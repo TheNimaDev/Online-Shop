@@ -61,4 +61,15 @@ module.exports = new (class {
         })
     }
 
+    async updateProduct(theProduct, slug, title, price, description, inventory, categoryId) {
+        await theProduct.update({
+            slug: slug || theProduct.slug,
+            title: title || theProduct.title,
+            price: price || theProduct.price,
+            description: description || theProduct.description,
+            inventory: inventory || theProduct.inventory,
+            categoryId: categoryId || theProduct.categoryId
+        })
+    }
+
 })()

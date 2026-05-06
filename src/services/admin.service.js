@@ -94,4 +94,21 @@ module.exports = new (class {
         await this.#Product.deleteProduct(productId)
     }
 
+    async updateProductService(productId, slug, title, price, description, inventory, categoryId) {
+        const isProductExists = await this.#Product.findProduct({ id: productId })
+        if (!isProductExists) return "PRODUCT_NOT_FOUND"
+
+        if (slug && slug != isProductExists.slug) {
+            const isProductExistsWithThisSlug = await this.#Product.findProduct({ slug })
+            if (isProductExistsWithThisSlug) return "SLUG_IS_EXISTS"
+        }
+
+        if (categoryId && categoryId != isProductExists.category_id) {
+            const isCategoryExists = await this.#Category.findCategory({ id: categoryId })
+            if (!isCategoryExists) return "CATEGORY_NOT_FOUND"
+        }
+
+        await this.#Product.updateProduct(isProductExists, slug, title, price, description, inventory, categoryId)
+    }
+
 })()
