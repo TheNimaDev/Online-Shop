@@ -78,4 +78,20 @@ module.exports = new (class {
         })
     }
 
+    async createComment(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+        const { text, positivePoints, negetivePoints, rate } = req.body
+
+        const result = await userService.createCommmentService(theUser.id, productId, text, positivePoints, negetivePoints, rate)
+
+        if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        }
+
+        return res.status(201).send({
+            message: "The Comment Created Successfully!"
+        })
+    }
+
 })
