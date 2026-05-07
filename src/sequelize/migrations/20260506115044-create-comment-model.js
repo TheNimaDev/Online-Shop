@@ -9,6 +9,14 @@ module.exports = {
         defaultValue: Sequelize.DataTypes.UUIDV4,
         primaryKey: true,
       },
+      user_id: {
+        type: Sequelize.DataTypes.UUID,
+        allowNull: false
+      },
+      product_id: {
+        type: Sequelize.DataTypes.UUID,
+        allowNull: false
+      },
       text: {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false
@@ -37,6 +45,12 @@ module.exports = {
         type: Sequelize.DataTypes.DATE,
         allowNull: false
       }
+    })
+
+    await queryInterface.addConstraint("tbl_comments", {
+      fields: ["user_id", "product_id"],
+      type: "UNIQUE",
+      name: "idx_comment_user_product",
     })
   },
 

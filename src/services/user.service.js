@@ -68,6 +68,9 @@ module.exports = new (class {
         const theProduct = await this.#ProductRepo.findProduct({ id: productId })
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
+        const isUserCommentedBefore = await this.#CommentRepo.findUserComment(userId, productId)
+        if (isUserCommentedBefore) return "USER_COMMENTED_BEFORE"
+
         await this.#CommentRepo.createComment(userId, productId, text, positivePoints, negetivePoints, rate)
         await this.#ProductRepo.updateRateOfProduct(productId)
     }

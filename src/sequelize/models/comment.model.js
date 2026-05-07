@@ -52,7 +52,14 @@ module.exports = (sequelize) => {
     },
     {
       tableName: "tbl_comments",
-      timestamps: true
+      timestamps: true,
+      indexes: [
+        {
+          name: "idx_comment_user_product",
+          fields: ["user_id", "product_id"],
+          unique: true
+        }
+      ]
     }
   )
 }

@@ -3,15 +3,6 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-
-    await queryInterface.addColumn(
-      "tbl_comments", "product_id",
-      {
-        type: Sequelize.DataTypes.UUID,
-        allowNull: false,
-      }
-    )
-
     await queryInterface.addConstraint(
       "tbl_comments",
       {
@@ -30,6 +21,5 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.removeConstraint("tbl_comments", "fk_comment_product")
-    await queryInterface.removeColumn("tbl_comments", "product_id")
   },
 }

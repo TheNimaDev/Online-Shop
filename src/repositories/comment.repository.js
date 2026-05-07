@@ -23,4 +23,15 @@ module.exports = new (class {
         })
     }
 
+    async findUserComment(userId, productId) {
+        const theComment = await this.#Comment.findOne({
+            where: {
+                user_id: userId,
+                product_id: productId,
+            }
+        })
+
+        return theComment
+    }
+
 })()
