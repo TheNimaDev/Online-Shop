@@ -149,4 +149,27 @@ module.exports = new (class {
         })
     }
 
+    async getNote(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+
+        const result = await userService.getNote(theUser.id, productId)
+
+        if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        } else if (result == "NOTE_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Note Not Found.")
+        }
+
+        return res.status(200).send(result)
+    }
+
+    async getNotes(req, res) {
+        const theUser = req.user
+
+        const result = await userService.getNotes(theUser.id)
+
+        return res.status(200).send(result)
+    }
+
 })

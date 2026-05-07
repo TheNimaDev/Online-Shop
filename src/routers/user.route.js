@@ -21,5 +21,7 @@ router.post("/comment/:productId",userController.createComment)
 router.post("/note/create/:productId",userController.createNote)
 router.post("/note/update/:productId",userController.updateNote)
 router.post("/note/delete/:productId",userController.deleteNote)
+router.get("/note/:productId",userController.getNote)
+router.get("/notes",userController.getNotes)
 
 module.exports = router
