@@ -96,4 +96,57 @@ module.exports = new (class {
         })
     }
 
+    async createNote(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+        const { text } = req.body
+
+        const result = await userService.createNoteService(theUser.id, productId, text)
+
+        if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        } else if (result == "NOTE_IS_EXISTS") {
+            throw new createHttpError.Conflict("You Already Have A Note For This Product.")
+        }
+
+        return res.status(201).send({
+            message: "The Note Created Successfully!"
+        })
+    }
+
+    async updateNote(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+        const { text } = req.body
+
+        const result = await userService.updateNote(theUser.id, productId, text)
+
+        if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        } else if (result == "NOTE_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Note Not Found.")
+        }
+
+        return res.status(201).send({
+            message: "The Note Updated Successfully!"
+        })
+    }
+
+    async deleteNote(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+
+        const result = await userService.deleteNote(theUser.id, productId)
+
+        if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        } else if (result == "NOTE_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Note Not Found.")
+        }
+
+        return res.status(201).send({
+            message: "The Note Deleted Successfully!"
+        })
+    }
+
 })
