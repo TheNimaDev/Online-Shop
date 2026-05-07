@@ -108,4 +108,20 @@ module.exports = new (class {
         await this.#NoteRepo.deleteNote(userId, productId)
     }
 
+    async getNote(userId, productId) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+        const theNote = await this.#NoteRepo.findUserNote(userId, productId)
+        if (!theNote) return "NOTE_NOT_FOUND"
+
+        return theNote
+    }
+
+    async getNotes(userId) {
+        const theNotes = await this.#NoteRepo.findUserNotes(userId)
+
+        return theNotes
+    }
+
 })
