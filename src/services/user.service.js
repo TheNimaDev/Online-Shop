@@ -2,6 +2,7 @@ const userRepo = require("../repositories/user.repository")
 const favoriteRepo = require("../repositories/favorite.repository")
 const commentRepo = require("../repositories/comment.repository")
 const productRepo = require("../repositories/product.repository")
+const noteRepo = require("../repositories/note.repository")
 const bcrypt = require("bcrypt")
 
 const { default: autoBind } = require("auto-bind")
@@ -11,12 +12,14 @@ module.exports = new (class {
     #FavoriteRepo;
     #ProductRepo;
     #CommentRepo;
+    #NoteRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
         this.#FavoriteRepo = favoriteRepo
         this.#ProductRepo = productRepo
         this.#CommentRepo = commentRepo
+        this.#NoteRepo = noteRepo
     }
 
     async changePasswordService(userId, current_password, new_password) {
@@ -73,6 +76,36 @@ module.exports = new (class {
 
         await this.#CommentRepo.createComment(userId, productId, text, positivePoints, negetivePoints, rate)
         await this.#ProductRepo.updateRateOfProduct(productId)
+    }
+
+    async createNoteService(userId, productId, text) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+        const isUserNoteExists = await this.#NoteRepo.findUserNote(userId, productId)
+        if (isUserNoteExists) return "NOTE_IS_EXISTS"
+
+        await this.#NoteRepo.createNote(userId, productId, text)
+    }
+
+    async updateNote(userId, productId, text) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+        const theNote = await this.#NoteRepo.findUserNote(userId, productId)
+        if (!theNote) return "NOTE_NOT_FOUND"
+
+        await this.#NoteRepo.updateNote(theNote, text)
+    }
+
+    async deleteNote(userId, productId) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+        const isUserNoteExists = await this.#NoteRepo.findUserNote(userId, productId)
+        if (!isUserNoteExists) return "NOTE_NOT_FOUND"
+
+        await this.#NoteRepo.deleteNote(userId, productId)
     }
 
 })

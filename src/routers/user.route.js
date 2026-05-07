@@ -18,4 +18,8 @@ router.post("/favorites/create/:productId", userController.createFavorite)
 
 router.post("/comment/:productId",userController.createComment)
 
+router.post("/note/create/:productId",userController.createNote)
+router.post("/note/update/:productId",userController.updateNote)
+router.post("/note/delete/:productId",userController.deleteNote)
+
 module.exports = router
