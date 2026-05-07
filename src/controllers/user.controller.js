@@ -87,6 +87,8 @@ module.exports = new (class {
 
         if (result == "PRODUCT_NOT_FOUND") {
             throw new createHttpError.NotFound("The Product Not Found.")
+        } else if (result == "USER_COMMENTED_BEFORE") {
+            throw new createHttpError.Conflict("You Have Already Commented This Product.")
         }
 
         return res.status(201).send({
