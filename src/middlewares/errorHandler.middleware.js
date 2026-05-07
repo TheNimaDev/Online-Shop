@@ -4,4 +4,6 @@ module.exports = async (err, req, res, next) => {
     res.status(status).json({
         message: err?.message ?? "InternalServerError"
     })
+    console.log(err);
+    
 }
