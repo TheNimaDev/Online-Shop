@@ -13,8 +13,8 @@ Now I'm Working On User Purchases Logic
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/TheNimaDev/Market-Price-Live.git
-cd Market-Price-Live
+git clone https://github.com/TheNimaDev/Online-Shop
+cd Online-Shop
 npm install
 ```
 
