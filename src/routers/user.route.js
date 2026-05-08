@@ -43,8 +43,16 @@ router.get("/note/:productId", userController.getNote)
 router.get("/notes", userController.getNotes)
 
 router.get("/cart", userController.getCart)
-router.post("/cart/add/:productId", userController.addProductToCart)
+router.post("/cart/add/:productId",
+    userValidator.addProductToCart(),
+    validatorMiddleware.validate().bind(validatorMiddleware),
+    userController.addProductToCart
+)
 router.post("/cart/delete/:productId", userController.deleteProductToCart)
-router.post("/cart/update/:productId", userController.updateProductToCart)
+router.post("/cart/update/:productId",
+    userValidator.updateProductToCart(),
+    validatorMiddleware.validate().bind(validatorMiddleware),
+    userController.updateProductToCart
+)
 
 module.exports = router
