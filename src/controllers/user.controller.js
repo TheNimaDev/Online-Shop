@@ -200,4 +200,50 @@ module.exports = new (class {
         })
     }
 
+    async deleteProductToCart(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+
+        const result = await userService.deleteProductToCartService(theUser.id, productId)
+
+        if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        } else if (result == "CART_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Cart Not Found.")
+        } else if (result == "CART_ITEM_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Item Not Found In Cart.")
+        }
+
+        return res.status(201).send({
+            message: "The Product Deleted from Your Cart Successfully!"
+        })
+    }
+
+    async updateProductToCart(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+        const { count } = req.body
+
+        const result = await userService.updateProductToCartService(theUser.id, productId, count)
+
+        switch (result) {
+            case "PRODUCT_NOT_FOUND":
+                throw new createHttpError.NotFound("The Product Not Found.")
+                break;
+            case "CART_NOT_FOUND":
+                throw new createHttpError.NotFound("The Cart Not Found.")
+                break;
+            case "CART_ITEM_NOT_FOUND":
+                throw new createHttpError.NotFound("The Item Not Found In Cart.")
+                break;
+            case "INVENTORY_IS_NOT_ENOUGH":
+                throw new createHttpError.BadRequest("The Quantity Of The Product You Need Is Not Available.")
+                break;
+        }
+
+        return res.status(201).send({
+            message: "The Product Updated In Your Cart Successfully!"
+        })
+    }
+
 })

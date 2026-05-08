@@ -36,4 +36,20 @@ module.exports = new (class {
         })
     }
 
+    async deleteCartItem(cartId, productId) {
+        await this.#CartItem.destroy({
+            where: {
+                cart_id: cartId,
+                product_id: productId,
+            }
+        })
+    }
+
+    async updateCartItem(item, count) {
+        await item.update({
+            count
+        })
+        await item.save()
+    }
+
 })()

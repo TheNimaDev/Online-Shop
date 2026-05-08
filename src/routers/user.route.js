@@ -44,5 +44,7 @@ router.get("/notes", userController.getNotes)
 
 router.get("/cart", userController.getCart)
 router.post("/cart/add/:productId", userController.addProductToCart)
+router.post("/cart/delete/:productId", userController.deleteProductToCart)
+router.post("/cart/update/:productId", userController.updateProductToCart)
 
 module.exports = router
