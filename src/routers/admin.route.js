@@ -4,6 +4,8 @@ const adminController = require("../controllers/admin.controller")
 const checkAuthMiddleware = require("../middlewares/checkAuth.middleware")
 const authenticationGuard = require("../guards/authentication.guard")
 const authorizationGuard = require("../guards/authorization.guard")
+const validatorMiddleware = require("../middlewares/validator.middleware")
+const adminValidator = require("../validator/admin.validator")
 
 const router = express.Router()
 
@@ -11,18 +13,34 @@ router.use(checkAuthMiddleware)
 router.use(authenticationGuard())
 router.use(authorizationGuard())
 
-router.get("/users",adminController.getUsers)
+router.get("/users", adminController.getUsers)
 
-router.post("/category",adminController.createCategory)
-router.post("/category/:categoryId",adminController.deleteCategory)
-router.post("/category/:categoryId/update",adminController.updateCategory)
-router.get("/category/:categoryId",adminController.getCategory)
-router.get("/categories",adminController.getCategories)
+router.post("/category",
+    adminValidator.createCategory(),
+    validatorMiddleware.validate().bind(validatorMiddleware),
+    adminController.createCategory
+)
+router.post("/category/:categoryId", adminController.deleteCategory)
+router.post("/category/:categoryId/update",
+    adminValidator.updateCategory(),
+    validatorMiddleware.validate().bind(validatorMiddleware),
+    adminController.updateCategory
+)
+router.get("/category/:categoryId", adminController.getCategory)
+router.get("/categories", adminController.getCategories)
 
-router.get("/products",adminController.getProducts)
-router.get("/product/:productId",adminController.getProduct)
-router.post("/product",adminController.createProduct)
-router.post("/product/:productId",adminController.deleteProduct)
-router.post("/product/:productId/update",adminController.updateProduct)
+router.get("/products", adminController.getProducts)
+router.get("/product/:productId", adminController.getProduct)
+router.post("/product",
+    adminValidator.createProduct(),
+    validatorMiddleware.validate().bind(validatorMiddleware),
+    adminController.createProduct
+)
+router.post("/product/:productId", adminController.deleteProduct)
+router.post("/product/:productId/update",
+    adminValidator.updateProduct(),
+    validatorMiddleware.validate().bind(validatorMiddleware),
+    adminController.updateProduct
+)
 
 module.exports = router
