@@ -154,4 +154,18 @@ module.exports = new (class {
         await this.#CartItemRepo.createCartItem(theCart.id, productId, count)
     }
 
+    async updateProductToCartService(userId, productId, count) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+        let theCart = await this.#CartRepo.findCart(userId)
+        if (!theCart) return "CART_NOT_FOUND"
+
+        const isItemExistsInCart = await this.#CartItemRepo.findCartItem({ cartId: theCart.id, productId })
+        if (!isItemExistsInCart) return "CART_ITEM_NOT_FOUND"
+        if (theProduct.inventory < count) return "INVENTORY_IS_NOT_ENOUGH"
+
+        await this.#CartItemRepo.updateCartItem(isItemExistsInCart, count)
+    }
+
 })
