@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "src/server.js",
   "scripts": {
-    "dev": "dotenv -e .env -- nodemon"
+    "dev": "dotenv -e .env -- nodemon",
+    "db": "npx sequelize-cli db:create",
+    "mig": "npx sequelize-cli db:migrate --migrations-path src/sequelize/migrations --models-path src/sequelize/models --seeders-path src/sequelize/seeders",
+    "seed": "npx sequelize-cli db:seed:all --migrations-path src/sequelize/migrations --models-path src/sequelize/models --seeders-path src/sequelize/seeders"
   },
   "keywords": [],
   "author": "",
