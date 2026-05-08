@@ -3,6 +3,8 @@ const favoriteRepo = require("../repositories/favorite.repository")
 const commentRepo = require("../repositories/comment.repository")
 const productRepo = require("../repositories/product.repository")
 const noteRepo = require("../repositories/note.repository")
+const cartRepo = require("../repositories/cart.repository")
+const cartItemRepo = require("../repositories/cartItem.repository")
 const bcrypt = require("bcrypt")
 
 const { default: autoBind } = require("auto-bind")
@@ -13,6 +15,8 @@ module.exports = new (class {
     #ProductRepo;
     #CommentRepo;
     #NoteRepo;
+    #CartRepo;
+    #CartItemRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
@@ -20,6 +24,8 @@ module.exports = new (class {
         this.#ProductRepo = productRepo
         this.#CommentRepo = commentRepo
         this.#NoteRepo = noteRepo
+        this.#CartRepo = cartRepo
+        this.#CartItemRepo = cartItemRepo
     }
 
     async changePasswordService(userId, current_password, new_password) {
@@ -122,6 +128,30 @@ module.exports = new (class {
         const theNotes = await this.#NoteRepo.findUserNotes(userId)
 
         return theNotes
+    }
+
+    async getCart(userId) {
+        const theCart = await this.#CartRepo.findCart(userId)
+
+        return theCart
+    }
+
+    async addProductToCartService(userId, productId, count) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+        if (theProduct.inventory < count) return "INVENTORY_IS_NOT_ENOUGH"
+
+        let theCart = await this.#CartRepo.findCart(userId)
+
+        if (!theCart) {
+            await this.#CartRepo.createCart(userId)
+            theCart = await this.#CartRepo.findCart(userId)
+        }
+
+        const isItemExistsInCart = await this.#CartItemRepo.findCartItem({ cartId: theCart.id, productId })
+        if (isItemExistsInCart) return "CART_ITEM_EXISTS"
+
+        await this.#CartItemRepo.createCartItem(theCart.id, productId, count)
     }
 
 })

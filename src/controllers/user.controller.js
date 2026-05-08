@@ -172,4 +172,32 @@ module.exports = new (class {
         return res.status(200).send(result)
     }
 
+    async getCart(req, res) {
+        const theUser = req.user
+
+        const result = await userService.getCart(theUser.id)
+
+        return res.status(200).send(result)
+    }
+
+    async addProductToCart(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+        const { count } = req.body
+
+        const result = await userService.addProductToCartService(theUser.id, productId, count)
+
+        if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        } else if (result == "CART_ITEM_EXISTS") {
+            throw new createHttpError.Conflict("This Product Is Already In Your Cart.")
+        } else if (result == "INVENTORY_IS_NOT_ENOUGH") {
+            throw new createHttpError.BadRequest("The Quantity Of The Product You Need Is Not Available.")
+        }
+
+        return res.status(201).send({
+            message: "The Product Added To Your Cart Successfully!"
+        })
+    }
+
 })
