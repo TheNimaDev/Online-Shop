@@ -1,18 +1,19 @@
 const { validationResult } = require("express-validator")
+const createHttpError = require("http-errors")
 
 module.exports = new (class {
   validationBody(req, res, next, helperFunction) {
     const result = validationResult(req)
     if (!result.isEmpty()) {
-      const errors = result.array()
-      const messages = []
-      errors.forEach((err) =>
-        messages.push({ field: err.path, error: err.msg })
+      const theErrors = result.array()
+      const errors = []
+      theErrors.forEach((err) =>
+        errors.push({ field: err.path, error: err.msg })
       )
 
       if (helperFunction) helperFunction(req, res)
 
-      return res.status(401).send(messages)
+      throw new createHttpError.BadRequest({ title: "validationError", errors })
     } else {
       return next()
     }
