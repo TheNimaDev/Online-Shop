@@ -246,4 +246,24 @@ module.exports = new (class {
         })
     }
 
+    async createCheckout(req, res) {
+        const theUser = req.user
+
+        const result = await userService.createCheckoutService(theUser.id)
+
+        if (result == "CART_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Cart Not Found.")
+        } else if (result == "CART_IS_EMPTY") {
+            throw new createHttpError.BadRequest("The Cart Is Empty.")
+        }
+
+        return res.status(201).send({
+            message: "The Checkout Created Successfully!",
+            data: {
+                success: `http://localhost:5005/user/checkout/verify/?authority=${result}&status=OK`,
+                fail: `http://localhost:5005/user/checkout/verify/?authority=${result}&status=NOK`
+            }
+        })
+    }
+
 })

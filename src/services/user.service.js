@@ -5,6 +5,9 @@ const productRepo = require("../repositories/product.repository")
 const noteRepo = require("../repositories/note.repository")
 const cartRepo = require("../repositories/cart.repository")
 const cartItemRepo = require("../repositories/cartItem.repository")
+const checkoutRepo = require("../repositories/checkout.repository")
+const { v4: uuidV4 } = require('uuid')
+const config = require("../core/config");
 const bcrypt = require("bcrypt")
 
 const { default: autoBind } = require("auto-bind")
@@ -17,6 +20,7 @@ module.exports = new (class {
     #NoteRepo;
     #CartRepo;
     #CartItemRepo;
+    #CheckoutRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
@@ -26,6 +30,7 @@ module.exports = new (class {
         this.#NoteRepo = noteRepo
         this.#CartRepo = cartRepo
         this.#CartItemRepo = cartItemRepo
+        this.#CheckoutRepo = checkoutRepo
     }
 
     async changePasswordService(userId, current_password, new_password) {
@@ -166,7 +171,7 @@ module.exports = new (class {
 
         await this.#CartItemRepo.deleteCartItem(theCart.id, productId)
     }
-    
+
     async updateProductToCartService(userId, productId, count) {
         const theProduct = await this.#ProductRepo.findProduct({ id: productId })
         if (!theProduct) return "PRODUCT_NOT_FOUND"
@@ -179,6 +184,16 @@ module.exports = new (class {
         if (theProduct.inventory < count) return "INVENTORY_IS_NOT_ENOUGH"
 
         await this.#CartItemRepo.updateCartItem(isItemExistsInCart, count)
+    }
+
+    async createCheckoutService(userId) {
+        let theCart = await this.#CartRepo.findCart(userId)
+        if (!theCart) return "CART_NOT_FOUND"
+        if (!theCart.items.length) return "CART_IS_EMPTY"
+
+        const theCheckout = await this.#CheckoutRepo.createCheckout(theCart, config.getAppConfig().checkout_expire, uuidV4())
+
+        return theCheckout.authority
     }
 
 })

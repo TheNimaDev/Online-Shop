@@ -24,6 +24,7 @@ const validation = Joi.object({
         access_token_secret: Joi.string().required(),
         refresh_token_expire: Joi.number().required(),
         access_token_expire: Joi.number().required(),
+        checkout_expire: Joi.number().required(),
     })
 })
 
@@ -53,6 +54,7 @@ module.exports = new (class {
                 access_token_secret: process.env.ACCESS_TOKEN_SECRET,
                 refresh_token_expire: +process.env.REFRESH_TOKEN_EXPIRE,
                 access_token_expire: +process.env.ACCESS_TOKEN_EXPIRE,
+                checkout_expire: +process.env.CHECKOUT_EXPIRE,
             }
         }
 
