@@ -45,4 +45,14 @@ module.exports = new (class {
         })
     }
 
+    async findUserCheckouts(cartId) {
+        const theCheckouts = await this.#Checkout.findAll({
+            where: {
+                cart_id: cartId
+            }
+        })
+
+        return theCheckouts
+    }
+
 })()
