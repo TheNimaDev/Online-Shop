@@ -9,6 +9,7 @@ const NoteModel = require("./note.model")
 const CartModel = require("./cart.model")
 const CartItemModel = require("./cartItem.model")
 const CheckoutModel = require("./checkout.model")
+const OrderModel = require("./order.model")
 
 exports.modelsLoader = (sequelize) => {
     /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
@@ -33,6 +34,8 @@ exports.modelsLoader = (sequelize) => {
     const CartItem = CartItemModel(sequelize)
     /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
     const Checkout = CheckoutModel(sequelize)
+    /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
+    const Order = OrderModel(sequelize)
 
     User.hasOne(Refreshtoken, {
         foreignKey: "user_id",
@@ -147,6 +150,23 @@ exports.modelsLoader = (sequelize) => {
         as: "cart"
     })
 
+    Checkout.hasOne(Order, {
+        foreignKey: "checkout_id",
+        as: "order"
+    })
+    Order.belongsTo(Checkout, {
+        foreignKey: "checkout_id",
+        as: "checkout"
+    })
+    User.hasMany(Order, {
+        foreignKey: "user_id",
+        as: "orders"
+    })
+    Order.belongsTo(User, {
+        foreignKey: "user_id",
+        as: "user"
+    })
+
     return {
         User,
         Refreshtoken,
@@ -158,6 +178,7 @@ exports.modelsLoader = (sequelize) => {
         Note,
         Cart,
         CartItem,
-        Checkout
+        Checkout,
+        Order
     }
 }
