@@ -45,14 +45,23 @@ module.exports = new (class {
         })
     }
 
-    async findUserCheckouts(cartId) {
+    async findUserCheckouts(cartId, status = null) {
         const theCheckouts = await this.#Checkout.findAll({
             where: {
                 cart_id: cartId
             }
         })
 
-        return theCheckouts
+        const result = []
+        if (theCheckouts && status) {
+            theCheckouts.map(checkout => {
+                if (checkout.status == status) {
+                    result.push(checkout)
+                }
+            })
+        }
+
+        return status ? result : theCheckouts
     }
 
 })()
