@@ -3,9 +3,11 @@ const { default: autoBind } = require("auto-bind")
 
 module.exports = new (class {
     #Checkout;
+    #Cart;
     constructor() {
         autoBind(this);
         this.#Checkout = models.Checkout
+        this.#Cart = models.Cart
     }
 
     async createCheckout(theCart, expire, authority) {
@@ -16,6 +18,31 @@ module.exports = new (class {
             total_price: theCart.dataValues.cartTotalPrice,
         })
         return theCheckout
+    }
+
+    async findCheckout({ authority = null, cartId = null }) {
+        const theCheckout = await this.#Checkout.findOne({
+            where: {
+                [Op.or]: [
+                    { cart_id: cartId },
+                    { authority }
+                ]
+            },
+            include: [
+                {
+                    model: this.#Cart,
+                    as: "cart"
+                }
+            ]
+        })
+
+        return theCheckout
+    }
+
+    async updateStatus(checkout, status) {
+        await checkout.update({
+            status
+        })
     }
 
 })()

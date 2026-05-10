@@ -56,5 +56,6 @@ router.post("/cart/update/:productId",
 )
 
 router.post("/checkout", userController.createCheckout)
+router.post("/checkout/verify", userController.verifyCheckout)
 
 module.exports = router

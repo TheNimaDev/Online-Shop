@@ -42,7 +42,7 @@ module.exports = new (class {
                 comment.negetivePoints = JSON.parse(comment.negetivePoints)
             })
         })
-        
+
         return theProducts
     }
 
@@ -129,6 +129,12 @@ module.exports = new (class {
                 rate: rate.toFixed(1)
             })
         }
+    }
+
+    async updateInventoryOfProduct(theProduct, count) {
+        await theProduct.update({
+            inventory: theProduct.inventory - count
+        })
     }
 
 })()
