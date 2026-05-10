@@ -197,6 +197,14 @@ module.exports = new (class {
         if (!theCart) return "CART_NOT_FOUND"
         if (!theCart.items.length) return "CART_IS_EMPTY"
 
+        const isUserHavePendingCheckout = await this.#CheckoutRepo.findUserCheckouts(theCart.id,"pending")
+        
+        if (isUserHavePendingCheckout) {
+            isUserHavePendingCheckout.forEach(async checkout => {
+                await this.#CheckoutRepo.updateStatus(checkout, "unpaid")
+            })
+        }
+
         const theCheckout = await this.#CheckoutRepo.createCheckout(theCart, config.getAppConfig().checkout_expire, uuidV4())
 
         return theCheckout.authority
