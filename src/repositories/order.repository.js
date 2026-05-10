@@ -13,10 +13,11 @@ module.exports = new (class {
     }
 
     async createOrder(userId, checkoutId) {
-        await this.#Order.create({
+        const theOrder = await this.#Order.create({
             user_id: userId,
             checkout_id: checkoutId
         })
+        return theOrder
     }
 
 })
