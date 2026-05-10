@@ -7,6 +7,7 @@ const cartRepo = require("../repositories/cart.repository")
 const cartItemRepo = require("../repositories/cartItem.repository")
 const checkoutRepo = require("../repositories/checkout.repository")
 const orderRepo = require("../repositories/order.repository")
+const orderItemRepo = require("../repositories/orderItem.repository")
 const { v4: uuidV4 } = require('uuid')
 const config = require("../core/config");
 const bcrypt = require("bcrypt")
@@ -23,6 +24,7 @@ module.exports = new (class {
     #CartItemRepo;
     #CheckoutRepo;
     #OrderRepo;
+    #OrderItemRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
@@ -34,6 +36,7 @@ module.exports = new (class {
         this.#CartItemRepo = cartItemRepo
         this.#CheckoutRepo = checkoutRepo
         this.#OrderRepo = orderRepo
+        this.#OrderItemRepo = orderItemRepo
     }
 
     async changePasswordService(userId, current_password, new_password) {
@@ -213,14 +216,16 @@ module.exports = new (class {
             if (!theCart) return "CART_NOT_FOUND"
             if (!theCart.items.length) return "CART_IS_EMPTY"
 
+            const theOrder = await this.#OrderRepo.createOrder(userId, checkout.id)
+
             theCart.items.forEach(async product => {
                 const theProduct = await this.#ProductRepo.findProduct({ id: product.product_id })
                 if (!theProduct) return "PRODUCT_NOT_FOUND"
 
                 await this.#ProductRepo.updateInventoryOfProduct(theProduct, product.count)
+                await this.#OrderItemRepo.createOrderItem(theOrder.id, product.product_id, product.count)
+                await this.#CartItemRepo.clearCartItems(theCart.id)
             })
-
-            await this.#OrderRepo.createOrder(userId, checkout.id)
         } else {
             return "STATUS_NOT_VALID"
         }

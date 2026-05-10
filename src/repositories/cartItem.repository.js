@@ -52,4 +52,12 @@ module.exports = new (class {
         await item.save()
     }
 
+    async clearCartItems(cartId) {
+        await this.#CartItem.destroy({
+            where: {
+                cart_id: cartId
+            }
+        })
+    }
+
 })()
