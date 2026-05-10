@@ -169,7 +169,7 @@ module.exports = new (class {
         const theProduct = await this.#ProductRepo.findProduct({ id: productId })
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
-        let theCart = await this.#CartRepo.findCart(userId)
+        const theCart = await this.#CartRepo.findCart(userId)
         if (!theCart) return "CART_NOT_FOUND"
 
         const isItemExistsInCart = await this.#CartItemRepo.findCartItem({ cartId: theCart.id, productId })
@@ -182,7 +182,7 @@ module.exports = new (class {
         const theProduct = await this.#ProductRepo.findProduct({ id: productId })
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
-        let theCart = await this.#CartRepo.findCart(userId)
+        const theCart = await this.#CartRepo.findCart(userId)
         if (!theCart) return "CART_NOT_FOUND"
 
         const isItemExistsInCart = await this.#CartItemRepo.findCartItem({ cartId: theCart.id, productId })
@@ -193,7 +193,7 @@ module.exports = new (class {
     }
 
     async createCheckoutService(userId) {
-        let theCart = await this.#CartRepo.findCart(userId)
+        const theCart = await this.#CartRepo.findCart(userId)
         if (!theCart) return "CART_NOT_FOUND"
         if (!theCart.items.length) return "CART_IS_EMPTY"
 
@@ -203,7 +203,7 @@ module.exports = new (class {
     }
 
     async verifyCheckoutService(userId, authority, status) {
-        let checkout = await this.#CheckoutRepo.findCheckout({ authority })
+        const checkout = await this.#CheckoutRepo.findCheckout({ authority })
         if (!checkout) return "CHECKOUT_NOT_FOUND"
         if (checkout.status != "pending") return "CHECKOUT_IS_VERIFIED"
 
@@ -229,6 +229,19 @@ module.exports = new (class {
         } else {
             return "STATUS_NOT_VALID"
         }
+    }
+
+    async getCheckoutsService(userId) {
+        const theCart = await this.#CartRepo.findCart(userId)
+        if (!theCart) return "CART_NOT_FOUND"
+        
+        const theCheckouts = await this.#CheckoutRepo.findUserCheckouts(theCart.id)
+        return theCheckouts
+    }
+
+    async getOrdersService(userId) {
+        const theOrders = await this.#OrderRepo.findUserOrders(userId)
+        return theOrders
     }
 
 })

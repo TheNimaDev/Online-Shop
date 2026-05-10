@@ -268,7 +268,7 @@ module.exports = new (class {
 
     async verifyCheckout(req, res) {
         const theUser = req.user
-        let { authority, status } = req.query
+        const { authority, status } = req.query
 
         const result = await userService.verifyCheckoutService(theUser.id, authority, status)
 
@@ -294,6 +294,24 @@ module.exports = new (class {
             message: `The Checkout ${status == "OK" ? "Paid" : "Unpaid"} Successfully!`
         })
 
+    }
+
+    async getCheckouts(req, res) {
+        const theUser = req.user
+        const result = await userService.getCheckoutsService(theUser.id)
+
+        if (result == "CART_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Cart Not Found.")
+        }
+
+        return res.status(200).send(result)
+    }
+
+    async getOrders(req, res) {
+        const theUser = req.user
+        const result = await userService.getOrdersService(theUser.id)
+        
+        return res.status(200).send(result)
     }
 
 })
