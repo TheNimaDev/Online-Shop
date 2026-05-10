@@ -40,16 +40,20 @@ module.exports = new (class {
             ]
         })
 
-        theCart.items.map(item => {
-            item.dataValues.itemTotalPrice = (item.count * item.product.price)
-        })
+        if (theCart) {
+            let cartTotalPrice = 0
+            if (theCart.items) {
+                theCart.items.map(item => {
+                    item.dataValues.itemTotalPrice = (item.count * item.product.price)
+                })
 
-        let cartTotalPrice = 0
-        theCart.items.map(item => {
-            cartTotalPrice += item.dataValues.itemTotalPrice
-        })
+                theCart.items.map(item => {
+                    cartTotalPrice += item.dataValues.itemTotalPrice
+                })
+            }
+            theCart.dataValues.cartTotalPrice = cartTotalPrice
+        }
 
-        theCart.dataValues.cartTotalPrice = cartTotalPrice
 
         return theCart
     }

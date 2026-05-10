@@ -24,6 +24,12 @@ module.exports = {
           type: Sequelize.DataTypes.INTEGER,
           allowNull: false
         },
+        status: {
+          type: Sequelize.DataTypes.ENUM,
+          values: ["paid", "unpaid", "pending"],
+          allowNull: false,
+          defaultValue: "pending"
+        },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE

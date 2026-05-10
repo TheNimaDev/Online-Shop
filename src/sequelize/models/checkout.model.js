@@ -31,6 +31,12 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false
       },
+      status: {
+        type: DataTypes.ENUM,
+        values: ["paid", "unpaid", "pending"],
+        allowNull: false,
+        defaultValue: "pending"
+      },
     },
     {
       tableName: "tbl_checkouts",
