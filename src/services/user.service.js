@@ -6,6 +6,7 @@ const noteRepo = require("../repositories/note.repository")
 const cartRepo = require("../repositories/cart.repository")
 const cartItemRepo = require("../repositories/cartItem.repository")
 const checkoutRepo = require("../repositories/checkout.repository")
+const orderRepo = require("../repositories/order.repository")
 const { v4: uuidV4 } = require('uuid')
 const config = require("../core/config");
 const bcrypt = require("bcrypt")
@@ -21,6 +22,7 @@ module.exports = new (class {
     #CartRepo;
     #CartItemRepo;
     #CheckoutRepo;
+    #OrderRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
@@ -31,6 +33,7 @@ module.exports = new (class {
         this.#CartRepo = cartRepo
         this.#CartItemRepo = cartItemRepo
         this.#CheckoutRepo = checkoutRepo
+        this.#OrderRepo = orderRepo
     }
 
     async changePasswordService(userId, current_password, new_password) {
@@ -205,7 +208,7 @@ module.exports = new (class {
             await this.#CheckoutRepo.updateStatus(checkout, "unpaid")
         } else if (status == "OK") {
             await this.#CheckoutRepo.updateStatus(checkout, "paid")
-            
+
             const theCart = await this.#CartRepo.findCart(userId)
             if (!theCart) return "CART_NOT_FOUND"
             if (!theCart.items.length) return "CART_IS_EMPTY"
@@ -216,6 +219,8 @@ module.exports = new (class {
 
                 await this.#ProductRepo.updateInventoryOfProduct(theProduct, product.count)
             })
+
+            await this.#OrderRepo.createOrder(userId, checkout.id)
         } else {
             return "STATUS_NOT_VALID"
         }
