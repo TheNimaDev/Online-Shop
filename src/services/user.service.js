@@ -196,4 +196,29 @@ module.exports = new (class {
         return theCheckout.authority
     }
 
+    async verifyCheckoutService(userId, authority, status) {
+        let checkout = await this.#CheckoutRepo.findCheckout({ authority })
+        if (!checkout) return "CHECKOUT_NOT_FOUND"
+        if (checkout.status != "pending") return "CHECKOUT_IS_VERIFIED"
+
+        if (status == "NOK") {
+            await this.#CheckoutRepo.updateStatus(checkout, "unpaid")
+        } else if (status == "OK") {
+            await this.#CheckoutRepo.updateStatus(checkout, "paid")
+            
+            const theCart = await this.#CartRepo.findCart(userId)
+            if (!theCart) return "CART_NOT_FOUND"
+            if (!theCart.items.length) return "CART_IS_EMPTY"
+
+            theCart.items.forEach(async product => {
+                const theProduct = await this.#ProductRepo.findProduct({ id: product.product_id })
+                if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+                await this.#ProductRepo.updateInventoryOfProduct(theProduct, product.count)
+            })
+        } else {
+            return "STATUS_NOT_VALID"
+        }
+    }
+
 })

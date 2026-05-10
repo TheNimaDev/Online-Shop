@@ -266,4 +266,34 @@ module.exports = new (class {
         })
     }
 
+    async verifyCheckout(req, res) {
+        const theUser = req.user
+        let { authority, status } = req.query
+
+        const result = await userService.verifyCheckoutService(theUser.id, authority, status)
+
+        switch (result) {
+            case "CHECKOUT_IS_VERIFIED":
+                throw new createHttpError.Conflict("The Checkout Already Verified.")
+                break;
+            case "CART_IS_EMPTY":
+                throw new createHttpError.BadRequest("The Cart Is Empty.")
+                break;
+            case "CART_NOT_FOUND":
+                throw new createHttpError.NotFound("The Cart Not Found.")
+                break;
+            case "CHECKOUT_NOT_FOUND":
+                throw new createHttpError.NotFound("The Checkout Not Found.")
+                break;
+            case "STATUS_NOT_VALID":
+                throw new createHttpError.BadRequest("The Status Not Valid.")
+                break;
+        }
+
+        return res.status(201).send({
+            message: `The Checkout ${status == "OK" ? "Paid" : "Unpaid"} Successfully!`
+        })
+
+    }
+
 })
