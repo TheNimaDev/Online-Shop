@@ -17,6 +17,10 @@ module.exports = {
           defaultValue: 1,
           allowNull: false
         },
+        productPriceAtTimeOfPurchase: {
+          type: Sequelize.DataTypes.INTEGER,
+          allowNull: false
+        },
         order_id: {
           type: Sequelize.DataTypes.UUID,
           allowNull: false

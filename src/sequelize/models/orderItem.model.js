@@ -34,6 +34,10 @@ module.exports = (sequelize) => {
         defaultValue: 1,
         allowNull: false
       },
+      productPriceAtTimeOfPurchase: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      }
     },
     {
       tableName: "tbl_orderItems",

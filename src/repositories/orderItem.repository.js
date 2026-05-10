@@ -12,11 +12,12 @@ module.exports = new (class {
         this.#Product = models.Product
     }
 
-    async createOrderItem(orderId, productid, count) {
+    async createOrderItem(orderId, productid, count, price) {
         await this.#OrderItem.create({
             order_id: orderId,
             product_id: productid,
-            count
+            count,
+            productPriceAtTimeOfPurchase: price,
         })
     }
 

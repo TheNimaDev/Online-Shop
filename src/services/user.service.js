@@ -223,7 +223,7 @@ module.exports = new (class {
                 if (!theProduct) return "PRODUCT_NOT_FOUND"
 
                 await this.#ProductRepo.updateInventoryOfProduct(theProduct, product.count)
-                await this.#OrderItemRepo.createOrderItem(theOrder.id, product.product_id, product.count)
+                await this.#OrderItemRepo.createOrderItem(theOrder.id, product.product_id, product.count, product.product.price)
                 await this.#CartItemRepo.clearCartItems(theCart.id)
             })
         } else {
@@ -234,7 +234,7 @@ module.exports = new (class {
     async getCheckoutsService(userId) {
         const theCart = await this.#CartRepo.findCart(userId)
         if (!theCart) return "CART_NOT_FOUND"
-        
+
         const theCheckouts = await this.#CheckoutRepo.findUserCheckouts(theCart.id)
         return theCheckouts
     }

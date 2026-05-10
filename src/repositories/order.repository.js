@@ -46,7 +46,7 @@ module.exports = new (class {
         theOrders.forEach(order => {
             let orderTotalPrice = 0
             order.items.map(item => {
-                item.dataValues.itemTotalPrice = (item.count * item.product.price)
+                item.dataValues.itemTotalPrice = (item.count * item.productPriceAtTimeOfPurchase)
             })
 
             order.items.map(item => {
