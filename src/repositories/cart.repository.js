@@ -14,12 +14,12 @@ module.exports = new (class {
         this.#Product = models.Product
     }
 
-    async findCart(userId) {
+    async findCart(userId, include = false) {
         const theCart = await this.#Cart.findOne({
             where: {
                 user_id: userId
             },
-            include: [
+            include: include ? [
                 {
                     model: this.#CartItem,
                     as: "items",
@@ -37,7 +37,7 @@ module.exports = new (class {
                         exclude: ["password"]
                     }
                 }
-            ]
+            ] : null
         })
 
         if (theCart) {
