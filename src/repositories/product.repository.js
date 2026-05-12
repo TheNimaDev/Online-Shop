@@ -14,26 +14,14 @@ module.exports = new (class {
         this.#User = models.User
     }
 
-    async findProducts() {
+    async findProducts(include = false) {
         const theProducts = await this.#Product.findAll({
-            include: [
+            include: include ? [
                 {
                     model: this.#Category,
                     as: "category"
-                }, {
-                    model: this.#Comment,
-                    as: "comments",
-                    include: [
-                        {
-                            model: this.#User,
-                            as: "user",
-                            attributes: {
-                                exclude: ["password"]
-                            }
-                        }
-                    ]
                 }
-            ]
+            ] : null
         })
 
         await theProducts?.map(product => {
@@ -46,7 +34,7 @@ module.exports = new (class {
         return theProducts
     }
 
-    async findProduct({ id = null, slug = null }) {
+    async findProduct({ id = null, slug = null, include = false }) {
         const theProduct = await this.#Product.findOne({
             where: {
                 [Op.or]: [
@@ -54,7 +42,7 @@ module.exports = new (class {
                     { slug }
                 ]
             },
-            include: [
+            include: include ? [
                 {
                     model: this.#Category,
                     as: "category"
@@ -71,7 +59,7 @@ module.exports = new (class {
                         }
                     ]
                 }
-            ]
+            ] : null
         })
 
         await theProduct?.comments.map(comment => {
@@ -113,7 +101,7 @@ module.exports = new (class {
     }
 
     async updateRateOfProduct(productId) {
-        const theProduct = await this.findProduct({ id: productId })
+        const theProduct = await this.findProduct({ id: productId, include: true })
 
         if (theProduct.comments) {
             let rate = 0
