@@ -53,7 +53,7 @@ module.exports = new (class {
     }
 
     async getCategoryService(categoryId) {
-        const theCategory = await this.#Category.findCategory({ id: categoryId })
+        const theCategory = await this.#Category.findCategory({ id: categoryId, include: true })
 
         if (!theCategory) return "CATEGORY_NOT_FOUND"
 
