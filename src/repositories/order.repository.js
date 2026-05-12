@@ -71,6 +71,13 @@ module.exports = new (class {
                             as: "product"
                         }
                     ]
+                },
+                {
+                    model: this.#User,
+                    as: "user",
+                    attributes: {
+                        exclude: ["password"]
+                    }
                 }
             ]
         })

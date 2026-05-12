@@ -142,7 +142,7 @@ module.exports = new (class {
     }
 
     async getCartService(userId) {
-        const theCart = await this.#CartRepo.findCart(userId)
+        const theCart = await this.#CartRepo.findCart(userId, true)
 
         return theCart
     }
@@ -193,7 +193,7 @@ module.exports = new (class {
     }
 
     async createCheckoutService(userId) {
-        const theCart = await this.#CartRepo.findCart(userId)
+        const theCart = await this.#CartRepo.findCart(userId, true)
         if (!theCart) return "CART_NOT_FOUND"
         if (!theCart.items.length) return "CART_IS_EMPTY"
 
@@ -220,7 +220,7 @@ module.exports = new (class {
         } else if (status == "OK") {
             await this.#CheckoutRepo.updateStatus(checkout, "paid")
 
-            const theCart = await this.#CartRepo.findCart(userId)
+            const theCart = await this.#CartRepo.findCart(userId, true)
             if (!theCart) return "CART_NOT_FOUND"
             if (!theCart.items.length) return "CART_IS_EMPTY"
 
