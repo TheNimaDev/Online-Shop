@@ -14,13 +14,13 @@ module.exports = new (class {
         this.#Category = models.Category
     }
 
-    async findUserNote(userId, productId) {
+    async findUserNote(userId, productId, include = false) {
         const theNote = await this.#Note.findOne({
             where: {
                 user_id: userId,
                 product_id: productId
             },
-            include: [
+            include: include ? [
                 {
                     model: this.#User,
                     as: "user",
@@ -37,18 +37,18 @@ module.exports = new (class {
                         }
                     ]
                 }
-            ]
+            ] : null
         })
 
         return theNote
     }
 
-    async findUserNotes(userId) {
+    async findUserNotes(userId, include = false) {
         const theNote = await this.#Note.findAll({
             where: {
                 user_id: userId,
             },
-            include: [
+            include: include ? [
                 {
                     model: this.#User,
                     as: "user",
@@ -65,7 +65,7 @@ module.exports = new (class {
                         }
                     ]
                 }
-            ]
+            ] : null
         })
 
         return theNote

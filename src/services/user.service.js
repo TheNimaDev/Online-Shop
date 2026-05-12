@@ -61,7 +61,7 @@ module.exports = new (class {
     }
 
     async getFavoritesService(userId) {
-        const theFavorites = await this.#FavoriteRepo.findAllUserFavorites(userId)
+        const theFavorites = await this.#FavoriteRepo.findAllUserFavorites(userId, true)
 
         return theFavorites
     }
@@ -129,14 +129,14 @@ module.exports = new (class {
         const theProduct = await this.#ProductRepo.findProduct({ id: productId })
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
-        const theNote = await this.#NoteRepo.findUserNote(userId, productId)
+        const theNote = await this.#NoteRepo.findUserNote(userId, productId, true)
         if (!theNote) return "NOTE_NOT_FOUND"
 
         return theNote
     }
 
     async getNotesService(userId) {
-        const theNotes = await this.#NoteRepo.findUserNotes(userId)
+        const theNotes = await this.#NoteRepo.findUserNotes(userId, true)
 
         return theNotes
     }
