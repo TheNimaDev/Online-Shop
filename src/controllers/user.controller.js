@@ -119,7 +119,7 @@ module.exports = new (class {
         const { productId } = req.params
         const { text } = req.body
 
-        const result = await userService.updateNote(theUser.id, productId, text)
+        const result = await userService.updateNoteService(theUser.id, productId, text)
 
         if (result == "PRODUCT_NOT_FOUND") {
             throw new createHttpError.NotFound("The Product Not Found.")
@@ -136,7 +136,7 @@ module.exports = new (class {
         const theUser = req.user
         const { productId } = req.params
 
-        const result = await userService.deleteNote(theUser.id, productId)
+        const result = await userService.deleteNoteService(theUser.id, productId)
 
         if (result == "PRODUCT_NOT_FOUND") {
             throw new createHttpError.NotFound("The Product Not Found.")
@@ -153,7 +153,7 @@ module.exports = new (class {
         const theUser = req.user
         const { productId } = req.params
 
-        const result = await userService.getNote(theUser.id, productId)
+        const result = await userService.getNoteService(theUser.id, productId)
 
         if (result == "PRODUCT_NOT_FOUND") {
             throw new createHttpError.NotFound("The Product Not Found.")
@@ -167,7 +167,7 @@ module.exports = new (class {
     async getNotes(req, res) {
         const theUser = req.user
 
-        const result = await userService.getNotes(theUser.id)
+        const result = await userService.getNotesService(theUser.id)
 
         return res.status(200).send(result)
     }
@@ -175,7 +175,7 @@ module.exports = new (class {
     async getCart(req, res) {
         const theUser = req.user
 
-        const result = await userService.getCart(theUser.id)
+        const result = await userService.getCartService(theUser.id)
 
         return res.status(200).send(result)
     }
