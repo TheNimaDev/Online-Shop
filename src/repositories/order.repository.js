@@ -59,4 +59,36 @@ module.exports = new (class {
 
     }
 
+    async getOrders() {
+        const theOrders = await this.#Order.findAll({
+            include: [
+                {
+                    model: this.#OrderItem,
+                    as: "items",
+                    include: [
+                        {
+                            model: this.#Product,
+                            as: "product"
+                        }
+                    ]
+                }
+            ]
+        })
+
+        theOrders.forEach(order => {
+            let orderTotalPrice = 0
+            order.items.map(item => {
+                item.dataValues.itemTotalPrice = (item.count * item.productPriceAtTimeOfPurchase)
+            })
+
+            order.items.map(item => {
+                orderTotalPrice += item.dataValues.itemTotalPrice
+            })
+            order.dataValues.orderTotalPrice = orderTotalPrice
+        })
+
+        return theOrders
+
+    }
+
 })

@@ -142,4 +142,21 @@ module.exports = new (class {
         })
     }
 
+    async getOrders(req, res) {
+        const result = await this.#AdminService.getOrdersService()
+
+        return res.status(200).send(result)
+    }
+
+    async getUserOrders(req, res) {
+        const { userId } = req.params
+
+        const result = await this.#AdminService.getUserOrdersService(userId)
+        if (result == "USER_NOT_FOUND") {
+            throw new createHttpError.NotFound("The User Not Found.")
+        }
+
+        return res.status(200).send(result)
+    }
+
 })()

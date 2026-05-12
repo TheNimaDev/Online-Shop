@@ -2,16 +2,19 @@ const userRepo = require("../repositories/user.repository")
 const categoryRepo = require("../repositories/category.repository")
 const productRepo = require("../repositories/product.repository")
 const { default: autoBind } = require("auto-bind")
+const orderRepo = require("../repositories/order.repository")
 
 module.exports = new (class {
     #UserRepo;
     #Category;
     #Product;
+    #OrderRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
         this.#Category = categoryRepo
         this.#Product = productRepo
+        this.#OrderRepo = orderRepo
     }
 
     async getUsersService() {
@@ -109,6 +112,21 @@ module.exports = new (class {
         }
 
         await this.#Product.updateProduct(isProductExists, slug, title, price, description, inventory, categoryId)
+    }
+
+    async getOrdersService() {
+        const theOrders = await this.#OrderRepo.getOrders()
+
+        return theOrders
+    }
+
+    async getUserOrdersService(userId) {
+        const isUserExists = await this.#UserRepo.findUser({ id: userId })
+        if (!isUserExists) return "USER_NOT_FOUND"
+
+        const theOrders = await this.#OrderRepo.findUserOrders(userId)
+
+        return theOrders
     }
 
 })()
