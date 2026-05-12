@@ -18,7 +18,7 @@ module.exports = new (class {
     }
 
     async getUsersService() {
-        const users = await this.#UserRepo.findUsers()
+        const users = await this.#UserRepo.findUsers(true)
 
         return users
     }

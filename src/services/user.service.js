@@ -40,7 +40,7 @@ module.exports = new (class {
     }
 
     async changePasswordService(userId, current_password, new_password) {
-        const theUser = await this.#UserRepo.findUser({ id: userId }, true)
+        const theUser = await this.#UserRepo.findUser({ id: userId, returnWithPassword: true })
 
         const isPasswordCorrect = await bcrypt.compare(current_password, theUser.password)
         if (!isPasswordCorrect) return "PASSWORD_IS_INCORRECT"
@@ -197,8 +197,8 @@ module.exports = new (class {
         if (!theCart) return "CART_NOT_FOUND"
         if (!theCart.items.length) return "CART_IS_EMPTY"
 
-        const isUserHavePendingCheckout = await this.#CheckoutRepo.findUserCheckouts(theCart.id,"pending")
-        
+        const isUserHavePendingCheckout = await this.#CheckoutRepo.findUserCheckouts(theCart.id, "pending")
+
         if (isUserHavePendingCheckout) {
             isUserHavePendingCheckout.forEach(async checkout => {
                 await this.#CheckoutRepo.updateStatus(checkout, "unpaid")
