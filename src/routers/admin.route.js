@@ -43,4 +43,7 @@ router.post("/product/:productId/update",
     adminController.updateProduct
 )
 
+router.get("/orders", adminController.getOrders)
+router.get("/orders/:userId", adminController.getUserOrders)
+
 module.exports = router
