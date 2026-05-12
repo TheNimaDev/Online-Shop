@@ -17,7 +17,7 @@ module.exports = new (class {
         })
     }
 
-    async findByUserId(userId) {
+    async findRefreshToken(userId) {
         const refreshTokenFound = await this.#Refreshtoken.findOne({
             where: {
                 user_id: userId
@@ -28,7 +28,7 @@ module.exports = new (class {
     }
 
     async updateRefreshToken(refreshToken, userId, expire, version) {
-        const theUserRefreshToken = await this.findByUserId(userId)
+        const theUserRefreshToken = await this.findRefreshToken(userId)
 
         await theUserRefreshToken.update({
             refresh_token: refreshToken,
