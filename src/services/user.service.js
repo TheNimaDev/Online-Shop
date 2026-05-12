@@ -105,7 +105,7 @@ module.exports = new (class {
         await this.#NoteRepo.createNote(userId, productId, text)
     }
 
-    async updateNote(userId, productId, text) {
+    async updateNoteService(userId, productId, text) {
         const theProduct = await this.#ProductRepo.findProduct({ id: productId })
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
@@ -115,7 +115,7 @@ module.exports = new (class {
         await this.#NoteRepo.updateNote(theNote, text)
     }
 
-    async deleteNote(userId, productId) {
+    async deleteNoteService(userId, productId) {
         const theProduct = await this.#ProductRepo.findProduct({ id: productId })
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
@@ -125,7 +125,7 @@ module.exports = new (class {
         await this.#NoteRepo.deleteNote(userId, productId)
     }
 
-    async getNote(userId, productId) {
+    async getNoteService(userId, productId) {
         const theProduct = await this.#ProductRepo.findProduct({ id: productId })
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
@@ -135,13 +135,13 @@ module.exports = new (class {
         return theNote
     }
 
-    async getNotes(userId) {
+    async getNotesService(userId) {
         const theNotes = await this.#NoteRepo.findUserNotes(userId)
 
         return theNotes
     }
 
-    async getCart(userId) {
+    async getCartService(userId) {
         const theCart = await this.#CartRepo.findCart(userId)
 
         return theCart

@@ -7,13 +7,13 @@ const orderRepo = require("../repositories/order.repository")
 module.exports = new (class {
     #UserRepo;
     #Category;
-    #Product;
+    #ProductRepo;
     #OrderRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
         this.#Category = categoryRepo
-        this.#Product = productRepo
+        this.#ProductRepo = productRepo
         this.#OrderRepo = orderRepo
     }
 
@@ -67,13 +67,13 @@ module.exports = new (class {
     }
 
     async getProductsService() {
-        const theProducts = await this.#Product.findProducts()
+        const theProducts = await this.#ProductRepo.findProducts()
 
         return theProducts
     }
 
     async getProductService(productId) {
-        const theProduct = await this.#Product.findProduct({ id: productId })
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
 
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
@@ -84,25 +84,25 @@ module.exports = new (class {
         const isCategoryExists = await this.#Category.findCategory({ id: categoryId })
         if (!isCategoryExists) return "CATEGORY_NOT_FOUND"
 
-        const isProductExists = await this.#Product.findProduct({ slug })
+        const isProductExists = await this.#ProductRepo.findProduct({ slug })
         if (isProductExists) return "PRODUCT_IS_EXISTS"
 
-        await this.#Product.createProduct(slug, title, price, description, inventory, categoryId)
+        await this.#ProductRepo.createProduct(slug, title, price, description, inventory, categoryId)
     }
 
     async deleteProductService(productId) {
-        const isProductExists = await this.#Product.findProduct({ id: productId })
+        const isProductExists = await this.#ProductRepo.findProduct({ id: productId })
         if (!isProductExists) return "PRODUCT_NOT_FOUND"
 
-        await this.#Product.deleteProduct(productId)
+        await this.#ProductRepo.deleteProduct(productId)
     }
 
     async updateProductService(productId, slug, title, price, description, inventory, categoryId) {
-        const isProductExists = await this.#Product.findProduct({ id: productId })
+        const isProductExists = await this.#ProductRepo.findProduct({ id: productId })
         if (!isProductExists) return "PRODUCT_NOT_FOUND"
 
         if (slug && slug != isProductExists.slug) {
-            const isProductExistsWithThisSlug = await this.#Product.findProduct({ slug })
+            const isProductExistsWithThisSlug = await this.#ProductRepo.findProduct({ slug })
             if (isProductExistsWithThisSlug) return "SLUG_IS_EXISTS"
         }
 
@@ -111,7 +111,7 @@ module.exports = new (class {
             if (!isCategoryExists) return "CATEGORY_NOT_FOUND"
         }
 
-        await this.#Product.updateProduct(isProductExists, slug, title, price, description, inventory, categoryId)
+        await this.#ProductRepo.updateProduct(isProductExists, slug, title, price, description, inventory, categoryId)
     }
 
     async getOrdersService() {
