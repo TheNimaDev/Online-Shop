@@ -3,6 +3,13 @@ const favoriteRepo = require("../repositories/favorite.repository")
 const commentRepo = require("../repositories/comment.repository")
 const productRepo = require("../repositories/product.repository")
 const noteRepo = require("../repositories/note.repository")
+const cartRepo = require("../repositories/cart.repository")
+const cartItemRepo = require("../repositories/cartItem.repository")
+const checkoutRepo = require("../repositories/checkout.repository")
+const orderRepo = require("../repositories/order.repository")
+const orderItemRepo = require("../repositories/orderItem.repository")
+const { v4: uuidV4 } = require('uuid')
+const config = require("../core/config");
 const bcrypt = require("bcrypt")
 
 const { default: autoBind } = require("auto-bind")
@@ -13,6 +20,11 @@ module.exports = new (class {
     #ProductRepo;
     #CommentRepo;
     #NoteRepo;
+    #CartRepo;
+    #CartItemRepo;
+    #CheckoutRepo;
+    #OrderRepo;
+    #OrderItemRepo;
     constructor() {
         autoBind(this);
         this.#UserRepo = userRepo
@@ -20,6 +32,11 @@ module.exports = new (class {
         this.#ProductRepo = productRepo
         this.#CommentRepo = commentRepo
         this.#NoteRepo = noteRepo
+        this.#CartRepo = cartRepo
+        this.#CartItemRepo = cartItemRepo
+        this.#CheckoutRepo = checkoutRepo
+        this.#OrderRepo = orderRepo
+        this.#OrderItemRepo = orderItemRepo
     }
 
     async changePasswordService(userId, current_password, new_password) {
@@ -122,6 +139,117 @@ module.exports = new (class {
         const theNotes = await this.#NoteRepo.findUserNotes(userId)
 
         return theNotes
+    }
+
+    async getCart(userId) {
+        const theCart = await this.#CartRepo.findCart(userId)
+
+        return theCart
+    }
+
+    async addProductToCartService(userId, productId, count) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+        if (theProduct.inventory < count) return "INVENTORY_IS_NOT_ENOUGH"
+
+        let theCart = await this.#CartRepo.findCart(userId)
+
+        if (!theCart) {
+            await this.#CartRepo.createCart(userId)
+            theCart = await this.#CartRepo.findCart(userId)
+        }
+
+        const isItemExistsInCart = await this.#CartItemRepo.findCartItem({ cartId: theCart.id, productId })
+        if (isItemExistsInCart) return "CART_ITEM_EXISTS"
+
+        await this.#CartItemRepo.createCartItem(theCart.id, productId, count)
+    }
+
+    async deleteProductToCartService(userId, productId) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+        const theCart = await this.#CartRepo.findCart(userId)
+        if (!theCart) return "CART_NOT_FOUND"
+
+        const isItemExistsInCart = await this.#CartItemRepo.findCartItem({ cartId: theCart.id, productId })
+        if (!isItemExistsInCart) return "CART_ITEM_NOT_FOUND"
+
+        await this.#CartItemRepo.deleteCartItem(theCart.id, productId)
+    }
+
+    async updateProductToCartService(userId, productId, count) {
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+        const theCart = await this.#CartRepo.findCart(userId)
+        if (!theCart) return "CART_NOT_FOUND"
+
+        const isItemExistsInCart = await this.#CartItemRepo.findCartItem({ cartId: theCart.id, productId })
+        if (!isItemExistsInCart) return "CART_ITEM_NOT_FOUND"
+        if (theProduct.inventory < count) return "INVENTORY_IS_NOT_ENOUGH"
+
+        await this.#CartItemRepo.updateCartItem(isItemExistsInCart, count)
+    }
+
+    async createCheckoutService(userId) {
+        const theCart = await this.#CartRepo.findCart(userId)
+        if (!theCart) return "CART_NOT_FOUND"
+        if (!theCart.items.length) return "CART_IS_EMPTY"
+
+        const isUserHavePendingCheckout = await this.#CheckoutRepo.findUserCheckouts(theCart.id,"pending")
+        
+        if (isUserHavePendingCheckout) {
+            isUserHavePendingCheckout.forEach(async checkout => {
+                await this.#CheckoutRepo.updateStatus(checkout, "unpaid")
+            })
+        }
+
+        const theCheckout = await this.#CheckoutRepo.createCheckout(theCart, config.getAppConfig().checkout_expire, uuidV4())
+
+        return theCheckout.authority
+    }
+
+    async verifyCheckoutService(userId, authority, status) {
+        const checkout = await this.#CheckoutRepo.findCheckout({ authority })
+        if (!checkout) return "CHECKOUT_NOT_FOUND"
+        if (checkout.status != "pending") return "CHECKOUT_IS_VERIFIED"
+
+        if (status == "NOK") {
+            await this.#CheckoutRepo.updateStatus(checkout, "unpaid")
+        } else if (status == "OK") {
+            await this.#CheckoutRepo.updateStatus(checkout, "paid")
+
+            const theCart = await this.#CartRepo.findCart(userId)
+            if (!theCart) return "CART_NOT_FOUND"
+            if (!theCart.items.length) return "CART_IS_EMPTY"
+
+            const theOrder = await this.#OrderRepo.createOrder(userId, checkout.id)
+
+            theCart.items.forEach(async product => {
+                const theProduct = await this.#ProductRepo.findProduct({ id: product.product_id })
+                if (!theProduct) return "PRODUCT_NOT_FOUND"
+
+                await this.#ProductRepo.updateInventoryOfProduct(theProduct, product.count)
+                await this.#OrderItemRepo.createOrderItem(theOrder.id, product.product_id, product.count, product.product.price)
+                await this.#CartItemRepo.clearCartItems(theCart.id)
+            })
+        } else {
+            return "STATUS_NOT_VALID"
+        }
+    }
+
+    async getCheckoutsService(userId) {
+        const theCart = await this.#CartRepo.findCart(userId)
+        if (!theCart) return "CART_NOT_FOUND"
+
+        const theCheckouts = await this.#CheckoutRepo.findUserCheckouts(theCart.id)
+        return theCheckouts
+    }
+
+    async getOrdersService(userId) {
+        const theOrders = await this.#OrderRepo.findUserOrders(userId)
+        return theOrders
     }
 
 })

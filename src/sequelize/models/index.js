@@ -6,6 +6,11 @@ const ProductModel = require("./product.model")
 const FavoriteModel = require("./favorite.model")
 const CommentModel = require("./comment.model")
 const NoteModel = require("./note.model")
+const CartModel = require("./cart.model")
+const CartItemModel = require("./cartItem.model")
+const CheckoutModel = require("./checkout.model")
+const OrderModel = require("./order.model")
+const OrderItemModel = require("./orderItem.model")
 
 exports.modelsLoader = (sequelize) => {
     /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
@@ -24,6 +29,16 @@ exports.modelsLoader = (sequelize) => {
     const Comment = CommentModel(sequelize)
     /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
     const Note = NoteModel(sequelize)
+    /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
+    const Cart = CartModel(sequelize)
+    /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
+    const CartItem = CartItemModel(sequelize)
+    /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
+    const Checkout = CheckoutModel(sequelize)
+    /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
+    const Order = OrderModel(sequelize)
+    /**@type{import("sequelize").ModelCtor<import("sequelize").Model<any,any>} */
+    const OrderItem = OrderItemModel(sequelize)
 
     User.hasOne(Refreshtoken, {
         foreignKey: "user_id",
@@ -103,6 +118,75 @@ exports.modelsLoader = (sequelize) => {
         as: "product"
     })
 
+    User.hasOne(Cart, {
+        foreignKey: "user_id",
+        as: "cart"
+    })
+    Cart.belongsTo(User, {
+        foreignKey: "user_id",
+        as: "user"
+    })
+
+    Cart.hasMany(CartItem, {
+        foreignKey: "cart_id",
+        as: "items"
+    })
+    CartItem.belongsTo(Cart, {
+        foreignKey: "cart_id",
+        as: "cart"
+    })
+    Product.hasMany(CartItem, {
+        foreignKey: "product_id",
+        as: "cartItem"
+    })
+    CartItem.belongsTo(Product, {
+        foreignKey: "product_id",
+        as: "product"
+    })
+
+    Cart.hasMany(Checkout, {
+        foreignKey: "cart_id",
+        as: "checkouts"
+    })
+    Checkout.belongsTo(Cart, {
+        foreignKey: "cart_id",
+        as: "cart"
+    })
+
+    Checkout.hasOne(Order, {
+        foreignKey: "checkout_id",
+        as: "order"
+    })
+    Order.belongsTo(Checkout, {
+        foreignKey: "checkout_id",
+        as: "checkout"
+    })
+    User.hasMany(Order, {
+        foreignKey: "user_id",
+        as: "orders"
+    })
+    Order.belongsTo(User, {
+        foreignKey: "user_id",
+        as: "user"
+    })
+
+    Order.hasMany(OrderItem, {
+        foreignKey: "order_id",
+        as: "items"
+    })
+    OrderItem.belongsTo(Order, {
+        foreignKey: "order_id",
+        as: "order"
+    })
+    Product.hasMany(OrderItem, {
+        foreignKey: "product_id",
+        as: "orderItem"
+    })
+    OrderItem.belongsTo(Product, {
+        foreignKey: "product_id",
+        as: "product"
+    })
+
     return {
         User,
         Refreshtoken,
@@ -111,6 +195,11 @@ exports.modelsLoader = (sequelize) => {
         Product,
         Favorite,
         Comment,
-        Note
+        Note,
+        Cart,
+        CartItem,
+        Checkout,
+        Order,
+        OrderItem
     }
 }

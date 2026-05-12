@@ -37,4 +37,18 @@ module.exports = new (class {
         ]
     }
 
+    addProductToCart() {
+        return [
+            check("count").not().isEmpty().withMessage("The count must not be empty"),
+            check("count").isNumeric().withMessage("The count must be Number"),
+        ]
+    }
+
+    updateProductToCart() {
+        return [
+            check("count").not().isEmpty().withMessage("The count must not be empty"),
+            check("count").isNumeric().withMessage("The count must be Number"),
+        ]
+    }
+
 })()
