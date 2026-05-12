@@ -172,4 +172,146 @@ module.exports = new (class {
         return res.status(200).send(result)
     }
 
+    async getCart(req, res) {
+        const theUser = req.user
+
+        const result = await userService.getCart(theUser.id)
+
+        return res.status(200).send(result)
+    }
+
+    async addProductToCart(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+        const { count } = req.body
+
+        const result = await userService.addProductToCartService(theUser.id, productId, count)
+
+        if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        } else if (result == "CART_ITEM_EXISTS") {
+            throw new createHttpError.Conflict("This Product Is Already In Your Cart.")
+        } else if (result == "INVENTORY_IS_NOT_ENOUGH") {
+            throw new createHttpError.BadRequest("The Quantity Of The Product You Need Is Not Available.")
+        }
+
+        return res.status(201).send({
+            message: "The Product Added To Your Cart Successfully!"
+        })
+    }
+
+    async deleteProductToCart(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+
+        const result = await userService.deleteProductToCartService(theUser.id, productId)
+
+        if (result == "PRODUCT_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Product Not Found.")
+        } else if (result == "CART_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Cart Not Found.")
+        } else if (result == "CART_ITEM_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Item Not Found In Cart.")
+        }
+
+        return res.status(201).send({
+            message: "The Product Deleted from Your Cart Successfully!"
+        })
+    }
+
+    async updateProductToCart(req, res) {
+        const theUser = req.user
+        const { productId } = req.params
+        const { count } = req.body
+
+        const result = await userService.updateProductToCartService(theUser.id, productId, count)
+
+        switch (result) {
+            case "PRODUCT_NOT_FOUND":
+                throw new createHttpError.NotFound("The Product Not Found.")
+                break;
+            case "CART_NOT_FOUND":
+                throw new createHttpError.NotFound("The Cart Not Found.")
+                break;
+            case "CART_ITEM_NOT_FOUND":
+                throw new createHttpError.NotFound("The Item Not Found In Cart.")
+                break;
+            case "INVENTORY_IS_NOT_ENOUGH":
+                throw new createHttpError.BadRequest("The Quantity Of The Product You Need Is Not Available.")
+                break;
+        }
+
+        return res.status(201).send({
+            message: "The Product Updated In Your Cart Successfully!"
+        })
+    }
+
+    async createCheckout(req, res) {
+        const theUser = req.user
+
+        const result = await userService.createCheckoutService(theUser.id)
+
+        if (result == "CART_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Cart Not Found.")
+        } else if (result == "CART_IS_EMPTY") {
+            throw new createHttpError.BadRequest("The Cart Is Empty.")
+        }
+
+        return res.status(201).send({
+            message: "The Checkout Created Successfully!",
+            data: {
+                success: `http://localhost:5005/user/checkout/verify/?authority=${result}&status=OK`,
+                fail: `http://localhost:5005/user/checkout/verify/?authority=${result}&status=NOK`
+            }
+        })
+    }
+
+    async verifyCheckout(req, res) {
+        const theUser = req.user
+        const { authority, status } = req.query
+
+        const result = await userService.verifyCheckoutService(theUser.id, authority, status)
+
+        switch (result) {
+            case "CHECKOUT_IS_VERIFIED":
+                throw new createHttpError.Conflict("The Checkout Already Verified.")
+                break;
+            case "CART_IS_EMPTY":
+                throw new createHttpError.BadRequest("The Cart Is Empty.")
+                break;
+            case "CART_NOT_FOUND":
+                throw new createHttpError.NotFound("The Cart Not Found.")
+                break;
+            case "CHECKOUT_NOT_FOUND":
+                throw new createHttpError.NotFound("The Checkout Not Found.")
+                break;
+            case "STATUS_NOT_VALID":
+                throw new createHttpError.BadRequest("The Status Not Valid.")
+                break;
+        }
+
+        return res.status(201).send({
+            message: `The Checkout ${status == "OK" ? "Paid" : "Unpaid"} Successfully!`
+        })
+
+    }
+
+    async getCheckouts(req, res) {
+        const theUser = req.user
+        const result = await userService.getCheckoutsService(theUser.id)
+
+        if (result == "CART_NOT_FOUND") {
+            throw new createHttpError.NotFound("The Cart Not Found.")
+        }
+
+        return res.status(200).send(result)
+    }
+
+    async getOrders(req, res) {
+        const theUser = req.user
+        const result = await userService.getOrdersService(theUser.id)
+        
+        return res.status(200).send(result)
+    }
+
 })
