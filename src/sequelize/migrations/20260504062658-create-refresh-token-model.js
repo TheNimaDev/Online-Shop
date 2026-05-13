@@ -16,6 +16,10 @@ module.exports = {
           type: Sequelize.DataTypes.STRING,
           allowNull: false,
         },
+        user_id: {
+          type: Sequelize.DataTypes.UUID,
+          allowNull: false
+        },
         expire_time: {
           type: Sequelize.DataTypes.BIGINT,
           allowNull: false,
@@ -38,6 +42,12 @@ module.exports = {
     await queryInterface.addIndex("tbl_refreshTokens", ["refresh_token"],
       {
         name: "idx_refreshToken",
+        unique: true
+      }
+    )
+    await queryInterface.addIndex("tbl_refreshTokens", ["user_id"],
+      {
+        name: "idx_userId",
         unique: true
       }
     )
