@@ -36,13 +36,13 @@ module.exports = new (class {
     }
 
     async loginService(email, password) {
-        const theUser = await this.#UserRepo.findUser({ email }, true)
+        const theUser = await this.#UserRepo.findUser({ email, returnWithPassword: true })
 
         if (!theUser) return "INCORRECT_DATA"
         const isPasswordCorrect = await bcrypt.compare(password, theUser.password)
 
         if (!isPasswordCorrect) return "INCORRECT_DATA"
-        const theRefreshToken = await this.#RefreshTokenRepo.findByUserId(theUser.id)
+        const theRefreshToken = await this.#RefreshTokenRepo.findRefreshToken(theUser.id)
 
         const now = Date.now()
         const refreshToken = await this.#TokenHelper.createRefreshToken(theUser.id, now, theRefreshToken?.version + 1 || undefined)
@@ -62,7 +62,7 @@ module.exports = new (class {
 
         if (decryptedToken == "TOKEN_IS_INVALID") return "TOKEN_IS_INVALID"
 
-        const theRefreshToken = await this.#RefreshTokenRepo.findByUserId(decryptedToken.id)
+        const theRefreshToken = await this.#RefreshTokenRepo.findRefreshToken(decryptedToken.id)
 
         if (!theRefreshToken) return "TOKEN_IS_INVALID"
         if (!(theRefreshToken.version == decryptedToken.version && Date.now() < theRefreshToken.expire_time)) return "TOKEN_IS_INVALID"

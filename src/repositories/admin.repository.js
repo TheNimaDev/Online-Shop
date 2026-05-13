@@ -10,7 +10,7 @@ module.exports = new (class {
         this.#User = models.User
     }
 
-    async findAdmin({ id = null, userId = null }) {
+    async findAdmin({ id = null, userId = null, include = false }) {
         const theAdmin = await this.#Admin.findOne({
             where: {
                 [Op.or]: [
@@ -18,7 +18,7 @@ module.exports = new (class {
                     { user_id: userId }
                 ]
             },
-            include: [
+            include: include ? [
                 {
                     model: this.#User,
                     as: "user",
@@ -26,7 +26,7 @@ module.exports = new (class {
                         exclude: ["password"]
                     }
                 }
-            ]
+            ] : null
         })
 
         return theAdmin

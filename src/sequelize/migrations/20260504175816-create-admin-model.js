@@ -12,6 +12,10 @@ module.exports = {
           defaultValue: Sequelize.DataTypes.UUIDV4,
           primaryKey: true,
         },
+        user_id: {
+          type: Sequelize.DataTypes.UUID,
+          allowNull: false
+        },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE
@@ -20,6 +24,13 @@ module.exports = {
           allowNull: false,
           type: Sequelize.DATE
         }
+      }
+    )
+
+    await queryInterface.addIndex("tbl_admins", ["user_id"],
+      {
+        name: "idx_userId",
+        unique: true
       }
     )
   },

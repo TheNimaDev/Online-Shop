@@ -31,12 +31,11 @@ module.exports = {
       }
     )
 
-    await queryInterface.addConstraint("tbl_orders", {
-      fields: ["user_id", "checkout_id"],
-      type: "UNIQUE",
-      name: "idx_order_user_checkout",
+    await queryInterface.addIndex("tbl_orders", ["user_id", "checkout_id"], {
+      name: "idx_userId_checkoutId",
+      unique: true
     })
-    
+
   },
 
   async down(queryInterface, Sequelize) {

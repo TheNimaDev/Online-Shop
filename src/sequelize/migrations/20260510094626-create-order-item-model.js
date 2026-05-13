@@ -39,6 +39,12 @@ module.exports = {
         }
       }
     )
+
+    await queryInterface.addIndex("tbl_orderItems", ["product_id", "order_id"], {
+      name: "idx_productId_orderId",
+      unique: true
+    })
+
   },
 
   async down(queryInterface, Sequelize) {

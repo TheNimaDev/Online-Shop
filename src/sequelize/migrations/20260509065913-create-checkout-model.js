@@ -12,6 +12,10 @@ module.exports = {
           defaultValue: Sequelize.DataTypes.UUIDV4,
           primaryKey: true,
         },
+        cart_id: {
+          type: Sequelize.DataTypes.UUID,
+          allowNull: false
+        },
         expire: {
           type: Sequelize.DataTypes.BIGINT,
           allowNull: false
@@ -41,11 +45,11 @@ module.exports = {
       }
     )
 
-    await queryInterface.addConstraint("tbl_checkouts", {
-      fields: ["authority"],
-      type: "UNIQUE",
-      name: "idx_checkout_authority",
+    await queryInterface.addIndex("tbl_checkouts", ["authority"], {
+      name: "idx_authority",
+      unique: true
     })
+
   },
 
   async down(queryInterface, Sequelize) {

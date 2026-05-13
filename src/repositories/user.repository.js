@@ -3,12 +3,16 @@ const { default: autoBind } = require("auto-bind")
 
 module.exports = new (class {
     #User;
+    #Comment;
+    #Order;
     constructor() {
         autoBind(this);
         this.#User = models.User
+        this.#Comment = models.Comment
+        this.#Order = models.Order
     }
 
-    async findUser({ email = null, id = null }, returnWithPassword = false) {
+    async findUser({ email = null, id = null, returnWithPassword = false, include = false }) {
         const theUser = await this.#User.findOne({
             where: {
                 [Op.or]: [
@@ -17,7 +21,16 @@ module.exports = new (class {
                 ]
             },
             attributes: {
-                exclude: [returnWithPassword ? null : "password"]
+                exclude: [returnWithPassword ? null : "password"],
+                include: include ? [
+                    {
+                        model: this.#Comment,
+                        as: "comments"
+                    }, {
+                        model: this.#Order,
+                        as: "orders"
+                    }
+                ] : null
             }
         })
 
@@ -37,11 +50,20 @@ module.exports = new (class {
         } : null
     }
 
-    async findUsers() {
+    async findUsers(include = false) {
         const theUsers = await this.#User.findAll({
             attributes: {
                 exclude: ["password"]
-            }
+            },
+            include: include ? [
+                {
+                    model: this.#Comment,
+                    as: "comments"
+                }, {
+                    model: this.#Order,
+                    as: "orders"
+                }
+            ] : null
         })
 
         return theUsers
