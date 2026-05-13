@@ -14,12 +14,12 @@ module.exports = new (class {
         this.#Product = models.Product
     }
 
-    async findAllUserFavorites(userId) {
+    async findAllUserFavorites(userId, include = false) {
         const theFavorites = await this.#Favorite.findAll({
             where: {
                 user_id: userId
             },
-            include: [
+            include: include ? [
                 {
                     model: this.#User,
                     as: "user",
@@ -36,19 +36,19 @@ module.exports = new (class {
                         }
                     ]
                 }
-            ]
+            ] : null
         })
 
         return theFavorites
     }
 
-    async findUserFavorite(userId, productId) {
+    async findUserFavorite(userId, productId, include) {
         const theFavorite = await this.#Favorite.findOne({
             where: {
                 product_id: productId,
                 user_id: userId
             },
-            include: [
+            include: include ? [
                 {
                     model: this.#User,
                     as: "user",
@@ -65,7 +65,7 @@ module.exports = new (class {
                         }
                     ]
                 }
-            ]
+            ] : null
         })
 
         return theFavorite

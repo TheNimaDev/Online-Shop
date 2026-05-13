@@ -35,19 +35,18 @@ module.exports = (sequelize) => {
       },
       positivePoints: {
         type: DataTypes.JSON,
-        allowNull: true
+        allowNull: false,
+        defaultValue: {}
       },
       negetivePoints: {
         type: DataTypes.JSON,
-        allowNull: true
+        allowNull: false,
+        defaultValue: {}
       },
       rate: {
-        type: DataTypes.INTEGER,
-        defaultValue: 5,
-        validate: {
-          min: 0,
-          max: 5
-        }
+        type: DataTypes.DECIMAL(2, 1),
+        allowNull: false,
+        defaultValue: 5
       }
     },
     {

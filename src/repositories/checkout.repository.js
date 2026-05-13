@@ -4,10 +4,12 @@ const { default: autoBind } = require("auto-bind")
 module.exports = new (class {
     #Checkout;
     #Cart;
+    #User;
     constructor() {
         autoBind(this);
         this.#Checkout = models.Checkout
         this.#Cart = models.Cart
+        this.#User = models.User
     }
 
     async createCheckout(theCart, expire, authority) {

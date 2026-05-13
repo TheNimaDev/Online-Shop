@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
           model: "tbl_users",
           key: "id"
         },
-        onDelete: "RESTRICT",
+        onDelete: "CASCADE",
         onUpdate: "CASCADE"
       },
       expire_time: {
@@ -40,6 +40,10 @@ module.exports = (sequelize) => {
           name: "idx_refreshToken",
           unique: true,
           fields: ["refreshToken"]
+        }, {
+          name: "idx_userId",
+          unique: true,
+          fields: ["user_id"]
         }
       ]
     }

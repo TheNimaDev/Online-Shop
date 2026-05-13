@@ -26,6 +26,12 @@ module.exports = {
         }
       }
     )
+
+    await queryInterface.addIndex("tbl_carts", ["user_id"], {
+      name: "idx_userId",
+      unique: true
+    })
+
   },
 
   async down(queryInterface, Sequelize) {

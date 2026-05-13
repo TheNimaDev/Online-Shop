@@ -10,7 +10,7 @@ module.exports = new (class {
         this.#Product = models.Product
     }
 
-    async findCategory({ slug = null, id = null }) {
+    async findCategory({ slug = null, id = null, include = false }) {
         const theCategory = await this.#Category.findOne({
             where: {
                 [Op.or]: [
@@ -18,12 +18,12 @@ module.exports = new (class {
                     { slug }
                 ]
             },
-            include: [
+            include: include ? [
                 {
                     model: this.#Product,
                     as: "products"
                 }
-            ]
+            ] : null
         })
 
         return theCategory
@@ -53,14 +53,14 @@ module.exports = new (class {
         })
     }
 
-    async findCategories() {
+    async findCategories(include = false) {
         const theCategories = await this.#Category.findAll({
-            include: [
+            include: include ? [
                 {
                     model: this.#Product,
                     as: "products"
                 }
-            ]
+            ] : null
         })
 
         return theCategories

@@ -18,7 +18,7 @@ module.exports = new (class {
     }
 
     async getUsersService() {
-        const users = await this.#UserRepo.findUsers()
+        const users = await this.#UserRepo.findUsers(true)
 
         return users
     }
@@ -53,7 +53,7 @@ module.exports = new (class {
     }
 
     async getCategoryService(categoryId) {
-        const theCategory = await this.#Category.findCategory({ id: categoryId })
+        const theCategory = await this.#Category.findCategory({ id: categoryId, include: true })
 
         if (!theCategory) return "CATEGORY_NOT_FOUND"
 
@@ -67,13 +67,13 @@ module.exports = new (class {
     }
 
     async getProductsService() {
-        const theProducts = await this.#ProductRepo.findProducts()
+        const theProducts = await this.#ProductRepo.findProducts(true)
 
         return theProducts
     }
 
     async getProductService(productId) {
-        const theProduct = await this.#ProductRepo.findProduct({ id: productId })
+        const theProduct = await this.#ProductRepo.findProduct({ id: productId, include: true })
 
         if (!theProduct) return "PRODUCT_NOT_FOUND"
 
@@ -98,11 +98,11 @@ module.exports = new (class {
     }
 
     async updateProductService(productId, slug, title, price, description, inventory, categoryId) {
-        const isProductExists = await this.#ProductRepo.findProduct({ id: productId })
+        const isProductExists = await this.#ProductRepo.findProduct({ id: productId, include: true })
         if (!isProductExists) return "PRODUCT_NOT_FOUND"
 
         if (slug && slug != isProductExists.slug) {
-            const isProductExistsWithThisSlug = await this.#ProductRepo.findProduct({ slug })
+            const isProductExistsWithThisSlug = await this.#ProductRepo.findProduct({ slug, include: true })
             if (isProductExistsWithThisSlug) return "SLUG_IS_EXISTS"
         }
 
