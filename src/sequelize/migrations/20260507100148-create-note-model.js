@@ -31,10 +31,9 @@ module.exports = {
       }
     })
 
-    await queryInterface.addConstraint("tbl_notes", {
-      fields: ["user_id", "product_id"],
-      type: "UNIQUE",
-      name: "idx_note_user_product",
+    await queryInterface.addIndex("tbl_notes", ["user_id", "product_id"], {
+      name: "idx_userId_productId",
+      unique: true
     })
   },
 

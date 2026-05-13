@@ -35,6 +35,12 @@ module.exports = {
         }
       }
     )
+
+    await queryInterface.addIndex("tbl_cartItems", ["cart_id", "product_id"], {
+      name: "idx_cartId_productId",
+      unique: true
+    })
+
   },
 
   async down(queryInterface, Sequelize) {
