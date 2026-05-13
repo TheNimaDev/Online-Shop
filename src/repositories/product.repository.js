@@ -24,13 +24,6 @@ module.exports = new (class {
             ] : null
         })
 
-        await theProducts?.map(product => {
-            product.comments.map(comment => {
-                comment.positivePoints = JSON.parse(comment.positivePoints)
-                comment.negetivePoints = JSON.parse(comment.negetivePoints)
-            })
-        })
-
         return theProducts
     }
 
@@ -62,10 +55,12 @@ module.exports = new (class {
             ] : null
         })
 
-        await theProduct?.comments.map(comment => {
-            comment.positivePoints = JSON.parse(comment.positivePoints)
-            comment.negetivePoints = JSON.parse(comment.negetivePoints)
-        })
+        if (include) {
+            await theProduct?.comments.map(comment => {
+                comment.positivePoints = JSON.parse(comment.positivePoints)
+                comment.negetivePoints = JSON.parse(comment.negetivePoints)
+            })
+        }
 
         return theProduct
     }
