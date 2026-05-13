@@ -6,6 +6,7 @@
     "dev": "dotenv -e .env -- nodemon",
     "db": "npx sequelize-cli db:create",
     "mig": "npx sequelize-cli db:migrate --migrations-path src/sequelize/migrations --models-path src/sequelize/models --seeders-path src/sequelize/seeders",
+    "mig_undo": "npx sequelize-cli db:migrate:undo:all --migrations-path src/sequelize/migrations --models-path src/sequelize/models --seeders-path src/sequelize/seeders",
     "seed": "npx sequelize-cli db:seed:all --migrations-path src/sequelize/migrations --models-path src/sequelize/models --seeders-path src/sequelize/seeders"
   },
   "keywords": [],

@@ -31,11 +31,8 @@ module.exports = (sequelize) => {
       },
       rate: {
         type: DataTypes.DECIMAL(2, 1),
-        defaultValue: 5,
-        validate: {
-          min: 0,
-          max: 5
-        }
+        allowNull: false,
+        defaultValue:5
       },
       inventory: {
         type: DataTypes.INTEGER,
@@ -48,7 +45,7 @@ module.exports = (sequelize) => {
           model: "tbl_categories",
           key: "id"
         },
-        onDelete: "RESTRICT",
+        onDelete: "CASCADE",
         onUpdate: "CASCADE"
       },
     },
