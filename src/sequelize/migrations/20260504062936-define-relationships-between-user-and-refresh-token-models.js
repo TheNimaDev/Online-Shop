@@ -4,14 +4,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
 
-    await queryInterface.addColumn(
-      "tbl_refreshTokens", "user_id",
-      {
-        type: Sequelize.DataTypes.UUID,
-        allowNull: false
-      }
-    )
-
     await queryInterface.addConstraint(
       "tbl_refreshTokens",
       {
@@ -22,7 +14,7 @@ module.exports = {
           table: "tbl_users",
           field: "id"
         },
-        onDelete: "RESTRICT",
+        onDelete: "CASCADE",
         onUpdate: "CASCADE"
       }
     )
@@ -30,6 +22,5 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.removeConstraint("tbl_refreshTokens", "fk_refreshToken_user")
-    await queryInterface.removeColumn("tbl_refreshTokens", "user_id")
   }
 }
