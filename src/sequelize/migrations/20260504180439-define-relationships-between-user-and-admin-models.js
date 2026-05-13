@@ -21,6 +21,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeConstraint("tbl_admins", "fk_admin_user")
+    await queryInterface.removeConstraint("tbl_admins", "fk_admins_user")
   }
 }

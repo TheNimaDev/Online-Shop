@@ -9,6 +9,10 @@ module.exports = {
         defaultValue: Sequelize.DataTypes.UUIDV4,
         primaryKey: true,
       },
+      category_id: {
+        type: Sequelize.DataTypes.UUID,
+        allowNull: false
+      },
       slug: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false
@@ -27,15 +31,13 @@ module.exports = {
       },
       views: {
         type: Sequelize.DataTypes.INTEGER,
+        allowNull: false,
         defaultValue: 0
       },
       rate: {
         type: Sequelize.DataTypes.DECIMAL(2, 1),
-        defaultValue: 5,
-        validate: {
-          min: 0,
-          max: 5,
-        },
+        allowNull: false,
+        defaultValue:5
       },
       inventory: {
         type: Sequelize.DataTypes.INTEGER,

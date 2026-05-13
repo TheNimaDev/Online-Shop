@@ -23,19 +23,18 @@ module.exports = {
       },
       positivePoints: {
         type: Sequelize.DataTypes.JSON,
-        allowNull: true
+        allowNull: false,
+        defaultValue: {}
       },
       negetivePoints: {
         type: Sequelize.DataTypes.JSON,
-        allowNull: true
+        allowNull: false,
+        defaultValue: {}
       },
       rate: {
-        type: Sequelize.DataTypes.INTEGER,
+        type: Sequelize.DataTypes.DECIMAL(2, 1),
+        allowNull: false,
         defaultValue: 5,
-        validate: {
-          min: 0,
-          max: 5
-        }
       },
       createdAt: {
         type: Sequelize.DataTypes.DATE,
@@ -47,10 +46,9 @@ module.exports = {
       }
     })
 
-    await queryInterface.addConstraint("tbl_comments", {
-      fields: ["user_id", "product_id"],
-      type: "UNIQUE",
-      name: "idx_comment_user_product",
+    await queryInterface.addIndex("tbl_comments", ["user_id", "product_id"], {
+      name: "idx_userId_productId",
+      unique: true
     })
   },
 
