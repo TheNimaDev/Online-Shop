@@ -4,7 +4,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     
-    
     await queryInterface.addConstraint(
       "tbl_orderItems",
       {
