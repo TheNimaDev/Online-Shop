@@ -5,6 +5,7 @@ const cors = require("cors")
 const helmet = require("helmet")
 const cookieParser = require("cookie-parser")
 const session = require("express-session")
+const createHttpError = require("http-errors")
 
 const config = require("./core/config")
 const errorHandler = require("./middlewares/errorHandler.middleware")
@@ -33,6 +34,9 @@ app.use("/auth", authRouter)
 app.use("/admin", adminRouter)
 app.use("/user", userRouter)
 
+app.use((req,res)=>{
+    throw new createHttpError.NotFound("Route Not Found - 404")
+})
 app.use(errorHandler)
 
 app.get("/", (req, res) => {
