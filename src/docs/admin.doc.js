@@ -6,6 +6,27 @@
  *  description: Admin Routes
  */
 
+
+// ?----------------- Users Routes
+/**
+ * @swagger
+ * 
+ * /admin/users:
+ *  get:
+ *      summary: Get Users List
+ *      tags:
+ *          -   Admin
+ *      responses:
+ *          200:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          403:
+ *              description: Forbidden Error (Authorization Error)
+ */
+
+
+// ?----------------- Categories Routes
 /**
  * @swagger
  * components:
@@ -44,22 +65,8 @@
  *                  example: Modern Cars Of The World
  */
 
-/**
+ /** 
  * @swagger
- * 
- * /admin/users:
- *  get:
- *      summary: Get Users List
- *      tags:
- *          -   Admin
- *      responses:
- *          200:
- *              description: Success
- *          401:
- *              description: Unauthorized Error (Authentication Error)
- *          403:
- *              description: Forbidden Error (Authorization Error)
- * 
  * /admin/category:
  *  post:
  *      summary: Create Category With (Slug, Title, Description)
@@ -160,4 +167,176 @@
  *             description: Unauthorized Error (Authentication Error)
  *         403:
  *             description: Forbidden Error (Authorization Error)
+ */
+
+
+// ?----------------- Products Routes
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      createProduct:
+ *          type: object
+ *          required:
+ *              -   slug
+ *              -   title
+ *              -   price
+ *              -   description
+ *              -   inventory
+ *              -   categoryId
+ *          properties:
+ *              slug: 
+ *                  type: string
+ *                  example: Bmw-730li
+ *              title: 
+ *                  type: string
+ *                  example: The Bmw 730li
+ *              price: 
+ *                  type: number
+ *                  example: 31500000000
+ *              description: 
+ *                  type: string
+ *                  example: Bmw 730li Vip Black Optional
+ *              inventory: 
+ *                  type: number
+ *                  example: 3
+ *              categoryId: 
+ *                  type: string
+ *                  example: ""
+ *      updateProduct:
+ *          type: object
+ *          required:
+ *              -   slug
+ *              -   title
+ *              -   price
+ *              -   description
+ *              -   inventory
+ *              -   categoryId
+ *          properties:
+ *              slug: 
+ *                  type: string
+ *                  example: Bmw-730li
+ *              title: 
+ *                  type: string
+ *                  example: The Bmw 730li
+ *              price: 
+ *                  type: number
+ *                  example: 31500000000
+ *              description: 
+ *                  type: string
+ *                  example: Bmw 730li Vip Black Optional
+ *              inventory: 
+ *                  type: number
+ *                  example: 3
+ *              categoryId: 
+ *                  type: string
+ *                  example: ""
+ */
+
+ /**
+ * @swagger
+ * 
+ * /admin/products:
+ *  get:
+ *      summary: Get Products List
+ *      tags:
+ *          -   Admin
+ *      responses:
+ *          200:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          403:
+ *              description: Forbidden Error (Authorization Error)
+ * 
+ * /admin/product/{productId}:
+ *  get:
+ *      summary: Get Product With (productId)
+ *      tags:
+ *          -   Admin
+ *      parameters:
+ *          -   in: path        
+ *              name: productId
+ *              type: string
+ *      responses:
+ *          200:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          403:
+ *              description: Forbidden Error (Authorization Error)
+ *          404:
+ *              description: NotFound Error (Product Not Found)
+ * 
+ *  post:
+ *      summary: Delete Product With (productId)
+ *      tags:
+ *          -   Admin
+ *      parameters:
+ *          -   in: path        
+ *              name: productId
+ *              type: string
+ *      responses:
+ *          201:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          403:
+ *              description: Forbidden Error (Authorization Error)
+ *          404:
+ *              description: NotFound Error (Product Not Found)
+ * 
+ * /admin/product:
+ *  post:
+ *      summary: Create Product With (Slug, Title, Price, Description, Inventory, CategoryId)
+ *      tags:
+ *          -   Admin
+ *      requestBody:
+ *          content:
+ *              application/x-www-form-urlencoded:
+ *                  schema:
+ *                      $ref: "#/components/schemas/createProduct"
+ *              application/json:
+ *                  schema:
+ *                      $ref: "#/components/schemas/createProduct"
+ *      responses:
+ *          201:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          403:
+ *              description: Forbidden Error (Authorization Error)
+ *          404:
+ *              description: NotFound Error (Product Not Found)
+ *          409:
+ *              description: Conflict Error (Product Is Exists)
+ * 
+ * /admin/product/{productId}/update:
+ *  post:
+ *      summary: Update Product With (productId, Slug, Title, Price, Description, Inventory, CategoryId)
+ *      tags:
+ *          -   Admin
+ *      parameters:
+ *          -   in: path        
+ *              name: productId
+ *              type: string
+ *      requestBody:
+ *          content:
+ *              application/x-www-form-urlencoded:
+ *                  schema:
+ *                      $ref: "#/components/schemas/updateProduct"
+ *              application/json:
+ *                  schema:
+ *                      $ref: "#/components/schemas/updateProduct"
+ *      responses:
+ *          201:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          403:
+ *              description: Forbidden Error (Authorization Error)
+ *          404:
+ *              description: NotFound Error (Product Or Category Not Found)
+ *          409:
+ *              description: Conflict Error (Slug Is Exists)
  */
