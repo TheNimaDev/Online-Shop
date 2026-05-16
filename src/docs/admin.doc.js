@@ -340,3 +340,41 @@
  *          409:
  *              description: Conflict Error (Slug Is Exists)
  */
+
+
+// ?----------------- Orders Routes
+/**
+ * @swagger
+ * 
+ * /admin/orders:
+ *  get:
+ *      summary: Get Users Orders List
+ *      tags:
+ *          -   Admin
+ *      responses:
+ *          200:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          403:
+ *              description: Forbidden Error (Authorization Error)
+ * 
+ * /admin/orders/{userId}:
+ *  get:
+ *      summary: Get User Orders List With (userId)
+ *      tags:
+ *          -   Admin
+ *      parameters:
+ *          -   in: path        
+ *              name: userId
+ *              type: string
+ *      responses:
+ *          200:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          403:
+ *              description: Forbidden Error (Authorization Error)
+ *          404:
+ *              description: NotFound Error (User Not Found)
+ */
