@@ -9,6 +9,7 @@ const createHttpError = require("http-errors")
 
 const config = require("./core/config")
 const errorHandler = require("./middlewares/errorHandler.middleware")
+const swaggerConfig = require("./core/swagger")
 
 const authRouter = require("./routers/auth.route")
 const adminRouter = require("./routers/admin.route")
@@ -33,8 +34,9 @@ app.use(express.urlencoded({ extended: true }))
 app.use("/auth", authRouter)
 app.use("/admin", adminRouter)
 app.use("/user", userRouter)
+swaggerConfig(app)
 
-app.use((req,res)=>{
+app.use((req, res) => {
     throw new createHttpError.NotFound("Route Not Found - 404")
 })
 app.use(errorHandler)
