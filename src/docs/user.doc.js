@@ -166,7 +166,7 @@
  *      tags:
  *          -   User
  *      parameters:
- *          -   in: path        
+ *          -   in: path
  *              name: productId
  *              type: string
  *      requestBody:
@@ -199,7 +199,7 @@
  *              text:
  *                  type: string
  *                  example: "its perfect"
- * 
+ *
  *      updateNote:
  *          type: object
  *          required:
@@ -218,7 +218,7 @@
  *      tags:
  *          -   User
  *      parameters:
- *          -   in: path        
+ *          -   in: path
  *              name: productId
  *              type: string
  *      requestBody:
@@ -238,14 +238,14 @@
  *              description: NotFound Error (Product Not Found)
  *          409:
  *              description: Conflict Error (Already Have Note For This Product)
- * 
+ *
  * /user/note/update/{productId}:
  *  post:
  *      summary: Update Note With (productId, Text)
  *      tags:
  *          -   User
  *      parameters:
- *          -   in: path        
+ *          -   in: path
  *              name: productId
  *              type: string
  *      requestBody:
@@ -263,14 +263,14 @@
  *              description: Unauthorized Error (Authentication Error)
  *          404:
  *              description: NotFound Error (Product Not Found Or Note Not Found)
- * 
+ *
  * /user/note/delete/{productId}:
  *  post:
  *      summary: Delete Note With (productId)
  *      tags:
  *          -   User
  *      parameters:
- *          -   in: path        
+ *          -   in: path
  *              name: productId
  *              type: string
  *      responses:
@@ -280,14 +280,14 @@
  *              description: Unauthorized Error (Authentication Error)
  *          404:
  *              description: NotFound Error (Product Not Found Or Note Not Found)
- * 
+ *
  * /user/note/{productId}:
  *  get:
  *      summary: Get Note With (productId)
  *      tags:
  *          -   User
  *      parameters:
- *          -   in: path        
+ *          -   in: path
  *              name: productId
  *              type: string
  *      responses:
@@ -297,7 +297,7 @@
  *              description: Unauthorized Error (Authentication Error)
  *          404:
  *              description: NotFound Error (Product Not Found Or Note Not Found)
- * 
+ *
  * /user/notes:
  *  get:
  *      summary: Get Notes
@@ -324,7 +324,7 @@
  *              count:
  *                  type: number
  *                  example: 2
- * 
+ *
  *      updateProductToCart:
  *          type: object
  *          required:
@@ -347,14 +347,14 @@
  *              description: Success
  *          401:
  *              description: Unauthorized Error (Authentication Error)
- * 
+ *
  * /user/cart/add/{productId}:
  *  post:
  *      summary: Add Product To Cart With (productId, Count)
  *      tags:
  *          -   User
  *      parameters:
- *          -   in: path        
+ *          -   in: path
  *              name: productId
  *              type: string
  *      requestBody:
@@ -376,14 +376,14 @@
  *              description: NotFound Error (Product Not Found)
  *          409:
  *              description: Conflict Error (Already Product In Cart)
- * 
+ *
  * /user/cart/delete/{productId}:
  *  post:
  *      summary: Delete Product In Cart With (productId)
  *      tags:
  *          -   User
  *      parameters:
- *          -   in: path        
+ *          -   in: path
  *              name: productId
  *              type: string
  *      responses:
@@ -393,14 +393,14 @@
  *              description: Unauthorized Error (Authentication Error)
  *          404:
  *              description: NotFound Error (Product Not Found Or Cart Not Found Or Product In Cart Not Found)
- * 
+ *
  * /user/cart/update/{productId}:
  *  post:
  *      summary: Update Product In Cart With (productId, Count)
  *      tags:
  *          -   User
  *      parameters:
- *          -   in: path        
+ *          -   in: path
  *              name: productId
  *              type: string
  *      requestBody:
@@ -421,3 +421,77 @@
  *          404:
  *              description: NotFound Error (Product Not Found Or Cart Not Found Or Product In Cart Not Found)
  */
+
+
+// ?----------------- Checkout Routes
+/**
+ * @swagger
+ * /user/checkouts:
+ *  get:
+ *      summary: Get Checkouts
+ *      tags:
+ *          -   User
+ *      responses:
+ *          200:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          404:
+ *              description: NotFound Error (Cart Not Found)
+ * 
+ * /user/checkout:
+ *  post:
+ *      summary: Create Checkout
+ *      tags:
+ *          -   User
+ *      responses:
+ *          200:
+ *              description: Success
+ *          400:
+ *              description: Bad Request Error (Cart Is Empty)
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          404:
+ *              description: NotFound Error (Cart Not Found)
+ * 
+ * /user/checkout/verify:
+ *  post:
+ *      summary: Verify Checkout With (Authority, Status)
+ *      tags:
+ *          -   User
+ *      parameters:
+ *          -   in: query
+ *              name: authority
+ *              type: string
+ *          -   in: query
+ *              name: status
+ *              type: string
+ *              description: OK Or NOK
+ *      responses:
+ *          200:
+ *              description: Success
+ *          400:
+ *              description: Bad Request Error (Cart Is Empty Or Status Not Valid)
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          404:
+ *              description: NotFound Error (Checkout Not Found Or Cart Not Found)
+ *          409:
+ *              description: Conflict Error (Checkout Already Verified)
+ */ 
+
+
+// ?----------------- Order Routes
+/**
+ * @swagger
+ * /user/orders:
+ *  get:
+ *      summary: Get Orders
+ *      tags:
+ *          -   User
+ *      responses:
+ *          200:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ */ 
