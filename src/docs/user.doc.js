@@ -309,3 +309,115 @@
  *          401:
  *              description: Unauthorized Error (Authentication Error)
  */
+
+
+// ?----------------- Favorite Routes
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      addProductToCart:
+ *          type: object
+ *          required:
+ *              -   count
+ *          properties:
+ *              count:
+ *                  type: number
+ *                  example: 2
+ * 
+ *      updateProductToCart:
+ *          type: object
+ *          required:
+ *              -   count
+ *          properties:
+ *              count:
+ *                  type: number
+ *                  example: 2
+ */
+
+/**
+ * @swagger
+ * /user/cart:
+ *  get:
+ *      summary: Get Cart
+ *      tags:
+ *          -   User
+ *      responses:
+ *          200:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ * 
+ * /user/cart/add/{productId}:
+ *  post:
+ *      summary: Add Product To Cart With (productId, Count)
+ *      tags:
+ *          -   User
+ *      parameters:
+ *          -   in: path        
+ *              name: productId
+ *              type: string
+ *      requestBody:
+ *          content:
+ *              application/x-www-form-urlencoded:
+ *                  schema:
+ *                      $ref: "#/components/schemas/addProductToCart"
+ *              application/json:
+ *                  schema:
+ *                      $ref: "#/components/schemas/addProductToCart"
+ *      responses:
+ *          200:
+ *              description: Success
+ *          400:
+ *              description: Bad Request Error (Products Quantity Is Not Available)
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          404:
+ *              description: NotFound Error (Product Not Found)
+ *          409:
+ *              description: Conflict Error (Already Product In Cart)
+ * 
+ * /user/cart/delete/{productId}:
+ *  post:
+ *      summary: Delete Product In Cart With (productId)
+ *      tags:
+ *          -   User
+ *      parameters:
+ *          -   in: path        
+ *              name: productId
+ *              type: string
+ *      responses:
+ *          200:
+ *              description: Success
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          404:
+ *              description: NotFound Error (Product Not Found Or Cart Not Found Or Product In Cart Not Found)
+ * 
+ * /user/cart/update/{productId}:
+ *  post:
+ *      summary: Update Product In Cart With (productId, Count)
+ *      tags:
+ *          -   User
+ *      parameters:
+ *          -   in: path        
+ *              name: productId
+ *              type: string
+ *      requestBody:
+ *          content:
+ *              application/x-www-form-urlencoded:
+ *                  schema:
+ *                      $ref: "#/components/schemas/updateProductToCart"
+ *              application/json:
+ *                  schema:
+ *                      $ref: "#/components/schemas/updateProductToCart"
+ *      responses:
+ *          200:
+ *              description: Success
+ *          400:
+ *              description: Bad Request Error (Products Quantity Is Not Available)
+ *          401:
+ *              description: Unauthorized Error (Authentication Error)
+ *          404:
+ *              description: NotFound Error (Product Not Found Or Cart Not Found Or Product In Cart Not Found)
+ */
