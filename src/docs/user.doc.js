@@ -54,6 +54,8 @@
  *      responses:
  *          201:
  *              description: Success
+ *          400:
+ *              description: Validation Error
  *          401:
  *              description: Unauthorized Error (Authentication Error Or Password Is Incorrect)
  *          409:
@@ -75,6 +77,8 @@
  *      responses:
  *          201:
  *              description: Success
+ *          400:
+ *              description: Validation Error
  *          401:
  *              description: Unauthorized Error (Authentication Error)
  *
@@ -177,6 +181,8 @@
  *      responses:
  *          201:
  *              description: Success
+ *          400:
+ *              description: Validation Error
  *          401:
  *              description: Unauthorized Error (Authentication Error)
  *          404:
@@ -232,6 +238,8 @@
  *      responses:
  *          201:
  *              description: Success
+ *          400:
+ *              description: Validation Error
  *          401:
  *              description: Unauthorized Error (Authentication Error)
  *          404:
@@ -311,7 +319,7 @@
  */
 
 
-// ?----------------- Favorite Routes
+// ?----------------- Cart Routes
 /**
  * @swagger
  * components:
@@ -366,8 +374,10 @@
  *                  schema:
  *                      $ref: "#/components/schemas/addProductToCart"
  *      responses:
- *          200:
+ *          201:
  *              description: Success
+ *          400:
+ *              description: Validation Error
  *          400:
  *              description: Bad Request Error (Products Quantity Is Not Available)
  *          401:
@@ -387,7 +397,7 @@
  *              name: productId
  *              type: string
  *      responses:
- *          200:
+ *          201:
  *              description: Success
  *          401:
  *              description: Unauthorized Error (Authentication Error)
@@ -412,8 +422,10 @@
  *                  schema:
  *                      $ref: "#/components/schemas/updateProductToCart"
  *      responses:
- *          200:
+ *          201:
  *              description: Success
+ *          400:
+ *              description: Validation Error
  *          400:
  *              description: Bad Request Error (Products Quantity Is Not Available)
  *          401:
@@ -445,7 +457,7 @@
  *      tags:
  *          -   User
  *      responses:
- *          200:
+ *          201:
  *              description: Success
  *          400:
  *              description: Bad Request Error (Cart Is Empty)
@@ -468,7 +480,7 @@
  *              type: string
  *              description: OK Or NOK
  *      responses:
- *          200:
+ *          201:
  *              description: Success
  *          400:
  *              description: Bad Request Error (Cart Is Empty Or Status Not Valid)

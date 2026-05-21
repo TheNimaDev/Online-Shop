@@ -83,6 +83,8 @@
  *      responses:
  *          201:
  *              description: Success
+ *          400:
+ *              description: Validation Error
  *          401:
  *              description: Unauthorized Error (Authentication Error)
  *          403:
@@ -146,6 +148,8 @@
  *      responses:
  *          201:
  *              description: Success
+ *          400:
+ *              description: Validation Error
  *          401:
  *              description: Unauthorized Error (Authentication Error)
  *          403:
@@ -302,6 +306,8 @@
  *      responses:
  *          201:
  *              description: Success
+ *          400:
+ *              description: Validation Error
  *          401:
  *              description: Unauthorized Error (Authentication Error)
  *          403:
@@ -331,6 +337,8 @@
  *      responses:
  *          201:
  *              description: Success
+ *          400:
+ *              description: Validation Error
  *          401:
  *              description: Unauthorized Error (Authentication Error)
  *          403:
