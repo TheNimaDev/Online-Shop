@@ -1,5 +1,5 @@
 const UserModel = require("./user.model")
-const RefreshtokenModel = require("./refreshtoken.model")
+const RefreshtokenModel = require("./refreshToken.model")
 const AdminModel = require("./admin.model")
 const CategoryModel = require("./category.model")
 const ProductModel = require("./product.model")

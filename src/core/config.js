@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Joi = require("joi")
 
 const validation = Joi.object({
