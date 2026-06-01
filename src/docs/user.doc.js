@@ -377,9 +377,7 @@
  *          201:
  *              description: Success
  *          400:
- *              description: Validation Error
- *          400:
- *              description: Bad Request Error (Products Quantity Is Not Available)
+ *              description: Validation Error Or Bad Request Error (Products Quantity Is Not Available)
  *          401:
  *              description: Unauthorized Error (Authentication Error)
  *          404:
@@ -425,9 +423,7 @@
  *          201:
  *              description: Success
  *          400:
- *              description: Validation Error
- *          400:
- *              description: Bad Request Error (Products Quantity Is Not Available)
+ *              description: Validation Error Or Bad Request Error (Products Quantity Is Not Available)
  *          401:
  *              description: Unauthorized Error (Authentication Error)
  *          404:
