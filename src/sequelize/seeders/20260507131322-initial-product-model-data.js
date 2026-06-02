@@ -32,7 +32,10 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date()
         },
-      ]
+      ],
+      {
+        ignoreDuplicates: true
+      }
     )
 
     const [theMusicsCategory] = await queryInterface.sequelize.query(`
@@ -62,7 +65,10 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date()
         },
-      ]
+      ],
+      {
+        ignoreDuplicates: true
+      }
     )
 
     const [theHomeAppliancesCategory] = await queryInterface.sequelize.query(`
@@ -81,7 +87,10 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date()
         }
-      ]
+      ],
+      {
+        ignoreDuplicates: true
+      }
     )
 
   },
