@@ -31,10 +31,10 @@ app.use(helmet());
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+app.use("/",swaggerConfig)
 app.use("/auth", authRouter)
 app.use("/admin", adminRouter)
 app.use("/user", userRouter)
-swaggerConfig(app)
 
 app.use((req, res) => {
     throw new createHttpError.NotFound("Route Not Found - 404")
