@@ -1,50 +1,36 @@
 # 🚀 Online Shop - v1.0.0
 
-This is an **Api Based** project that is under development.
-Built with **Nodejs**, **Express**, **Mysql**, **Sequelize** And ...
+a Simple **Api Based** Project Built with **Nodejs**, **Express**, **Mysql**, **Sequelize** And ...
 
 ---
-## 🛠 My Next Step
-
-Now I'm Working On User Purchases Logic
-
----
-
-## ⚙️ Installation
+## 🏃 How to Run?
 
 ```bash
 git clone https://github.com/TheNimaDev/Online-Shop
 cd Online-Shop
-npm install
 ```
 
-## 🔗 Database Setup
+First Rename `.env.exmaple` to `.env` And `config.exmaple.json` to `config.json` in `config` folder.
 
-```bash
-npm run db
-npm run mig
-npm run seed
-````
-
-## ▶️ Run the Project
-
-```bash
-npm run dev
+Then run this:
+```
+docker compose up --build -d
 ```
 
----
+Wait For The Containers To Run Completely.
 
-## 🧾 License
 
-This project is licensed under the **MIT License**.  
-Feel free to use, modify, and share with credit to **[@TheNimaDev](https://github.com/TheNimaDev)** 💜
+Finally You Have Access To The Project With:
+```
+localhost:4004
+```
 
 ---
 
 ## 🤝 Contributing
 
 Pull requests and ideas are always welcome!  
-If you want to contribute, you can build frontend.😅
+If you want to make me even happier, just give a ⭐!
 
 ---
 
