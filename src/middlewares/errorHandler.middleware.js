@@ -8,4 +8,8 @@ module.exports = async (err, req, res, next) => {
             message: err?.message ?? "InternalServerError"
         })
     }
+
+    if (process.env?.NODE_ENV) {
+        console.log("Error Message: " , err.message)
+    }
 }
